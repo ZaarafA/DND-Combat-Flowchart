@@ -1,5 +1,10 @@
-input_button =  document.getElementById("input-button")
-console.log("AAAAAAAAA")
+input_button = document.getElementById("input-button");
+test_fields = document.getElementById("test-fields");
+
+
+console.log("AAAAAAAAA");
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
 
 input_button.addEventListener("change", e => {
     const file = e.target.files[0]
@@ -29,12 +34,12 @@ async function extractFormFields(pdfDoc) {
         const page = await pdfDoc.getPage(pageNum);
         const annotations = await page.getAnnotations();
         annotations.forEach(annotation => {
-            if (annotation.fieldName && annotation.fieldType) {
+            if (annotation.fieldName) {
                 fields.push({
-                    page: pageNum,
                     fieldName: annotation.fieldName,
                     fieldValue: annotation.fieldValue || 'No value',
-                    fieldType: annotation.fieldType
+                    // page: pageNum,
+                    // fieldType: annotation.fieldType
                 });
             }
         });
