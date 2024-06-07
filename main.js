@@ -5,8 +5,6 @@ let pdfData = {};
 let spells = {}
 let weapAtks = {};
 
-
-console.log("AAAAAAAAA");
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
 
@@ -75,4 +73,26 @@ function loadSpells(){
         }
     }
     //console.log(spells);
+}
+
+function loadWeapAtk(){
+    const keys = Object.keys(pdfData).filter(key => key.startsWith("Wpn Name"));
+
+    weapAtks[0] = {
+        Name: `${pdfData['Wpn Name']}`,
+        Bonus: `${pdfData['Wpn1 AtkBonus']}`,
+        Time: `1A`,
+        Damage: `${pdfData[`Wpn1 Damage`]}`,
+    }
+    
+    for(const key in keys){
+        let num = parseInt(key.replace('Wpn Name', ''), 10) || 1;
+        weapAtks[num] = {
+            Name: `${pdfData[keys[key]]}`,
+            Bonus: `${pdfData[`Wpn${num} AtkBonus`]}`,
+            Time: `1A`,
+            Damage: `${pdfData[`Wpn${num} Damage`]}`,
+        }
+    }
+    console.log(weapAtks);
 }
