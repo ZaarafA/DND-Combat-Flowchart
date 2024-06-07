@@ -1,6 +1,7 @@
 input_button = document.getElementById("input-button");
 test_fields = document.getElementById("test-fields");
 
+let pdfData = {};
 
 console.log("AAAAAAAAA");
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -28,22 +29,17 @@ input_button.addEventListener("change", e => {
 });
 
 async function extractFormFields(pdfDoc) {
-    const fields = [];
+    // const fields = [];
 
     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
         const page = await pdfDoc.getPage(pageNum);
         const annotations = await page.getAnnotations();
         annotations.forEach(annotation => {
-            if (annotation.fieldName) {
-                fields.push({
-                    fieldName: annotation.fieldName,
-                    fieldValue: annotation.fieldValue || 'No value',
-                    // page: pageNum,
-                    // fieldType: annotation.fieldType
-                });
+            if (annotation.fieldName && annotation.fieldValue) {
+                pdfData[annotation.fieldName] = annotation.fieldValue || 'No value';
             }
         });
     }
 
-    console.log(fields);
+    console.log(pdfData);
 }
