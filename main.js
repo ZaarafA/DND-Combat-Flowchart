@@ -123,14 +123,14 @@ function renderFlowchart(){
     chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
     flowchart TD;
-            Start[Start of the Round]:::clickableNode --> Actions(Action):::clickableNode;
-            Start --> BAs(Bonus Action):::clickableNode;
-            Start --> Reactions(Reaction):::clickableNode;
+            Start[Start of the Round]:::clickableNode ==> Actions(Action):::clickableNode;
+            Start ==> BAs(Bonus Action):::clickableNode;
+            Start ==> Reactions(Reaction):::clickableNode;
     `;
 
     // RENDER MOVEMENT
     let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
-    chartDefinition += `\nStart --> Movement(Movement <br> ${movement}):::clickableNode;`
+    chartDefinition += `\nStart ==> Movement(Movement <br> ${movement}):::clickableNode;`
 
     // RENDER ACTIONS
     // Load Spells
@@ -232,6 +232,11 @@ function renderFlowchart(){
                 let nodeId = event.currentTarget.dataset.id;
                 onNodeClick(nodeId);
             });
+            node.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                let nodeId = event.currentTarget.dataset.id;
+                deleteNode(nodeId);
+            });
         });
     }, 200);
 }
@@ -263,7 +268,46 @@ function updateFlowchart(nodeId){
                 let nodeId = event.currentTarget.dataset.id;
                 onNodeClick(nodeId);
             });
+            node.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                let nodeId = event.currentTarget.dataset.id;
+                deleteNode(nodeId);
+            });
         });
     }, 200);
 }
 
+function deleteNode(nodeId) {
+    const nodeRegex = new RegExp(`\\n${nodeId}\\([^)]+\\)`, 'g');
+    const connectionRegex = new RegExp(`\\n.*--.*${nodeId}.*`, 'g');
+    chartDefinition = chartDefinition.replace(nodeRegex, '');
+    chartDefinition = chartDefinition.replace(connectionRegex, '');
+
+    let prev_chart = document.querySelector(".active-flowchart");
+    if (prev_chart) {
+        prev_chart.remove();
+    }
+
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("mermaid");
+    newDiv.classList.add("active-flowchart");
+    container.appendChild(newDiv);
+
+    newDiv.innerHTML = chartDefinition;
+    mermaid.run(undefined, newDiv);
+
+    setTimeout(() => {
+        const clickableNodes = newDiv.querySelectorAll('.clickableNode');
+        clickableNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                let nodeId = event.currentTarget.dataset.id;
+                onNodeClick(nodeId);
+            });
+            node.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                let nodeId = event.currentTarget.dataset.id;
+                deleteNode(nodeId);
+            });
+        });
+    }, 200);
+}
