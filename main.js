@@ -1,4 +1,5 @@
 input_button = document.getElementById("input-button");
+save_button = document.getElementById("save-png")
 test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
 
@@ -31,6 +32,16 @@ input_button.addEventListener("change", e => {
         console.error('Please upload a PDF file.');
     }
 });
+
+save_button.addEventListener("click", () => {
+    html2canvas(document.getElementById("flowchart"), {scale: 2, allowTaint: true, useCORS: true}).then(canvas => {
+        let link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `${pdfData["CharacterName"]}.png`;
+        link.click();
+    })
+})
+
 
 async function extractFormFields(pdfDoc) {
     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
