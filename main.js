@@ -1,5 +1,6 @@
 input_button = document.getElementById("input-button");
 test_fields = document.getElementById("test-fields");
+flowchart = document.getElementById("flowchart");
 
 let pdfData = {};
 let spells = {}
@@ -45,7 +46,8 @@ async function extractFormFields(pdfDoc) {
     console.log(pdfData);
     loadSpells();
     loadWeapAtk();
-    renderTest();
+    // renderTest();
+    renderFlowchart();
 }
 
 function renderTest(){
@@ -96,3 +98,17 @@ function loadWeapAtk(){
     }
     console.log(weapAtks);
 }
+
+function renderFlowchart(){
+    flowchart.classList.add("mermaid");
+    let chartDefinition = `
+        flowchart TD;
+            Start[Start of the Round] --> Actions(Action);
+            Start --> BAs(Bonus Action);
+            Start --> Reactions(Reaction);
+            Start --> Movement(Movement);
+    `;
+    flowchart.innerHTML = chartDefinition;
+    mermaid.init(undefined, flowchart);
+}
+

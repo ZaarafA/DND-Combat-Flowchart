@@ -6,11 +6,17 @@
     <title>Document</title>
     <script defer src="main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
 </head>
 <body>
     <div class="container">
-        <input type="file" id="input-button" accept="application/pdf"/>
+        <div class="header">
+            <input type="file" id="input-button" accept="application/pdf"/>
+        </div>
         <div id="test-fields"></div>
+        <div id="flowchart">
+        </div>
     </div>
 </body>
 </html>
