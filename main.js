@@ -47,6 +47,7 @@ async function extractFormFields(pdfDoc) {
     loadSpells();
     loadWeapAtk();
     // renderTest();
+
     renderFlowchart();
 }
 
@@ -108,6 +109,17 @@ function renderFlowchart(){
             Start --> Reactions(Reaction);
             Start --> Movement(Movement);
     `;
+
+    // Load Weap Attacks
+    if(weapAtks){
+        chartDefinition += `Actions --> Attacks(Attacks)`
+
+        Object.keys(weapAtks).forEach((key, index) => {
+            let nodeLabel = `Weap${index}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]`;
+            chartDefinition += `\nAttacks --> ${nodeLabel}`;
+        });
+    }
+
     flowchart.innerHTML = chartDefinition;
     mermaid.init(undefined, flowchart);
 }
