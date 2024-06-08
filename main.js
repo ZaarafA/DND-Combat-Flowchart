@@ -75,7 +75,7 @@ function loadSpells(){
             Range: `${pdfData[`spellRange${num}`]}`,
         }
     }
-    //console.log(spells);
+    console.log(spells);
 }
 
 function loadWeapAtk(){
@@ -118,6 +118,26 @@ function renderFlowchart(){
             let nodeLabel = `Weap${index}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]`;
             chartDefinition += `\nAttacks --> ${nodeLabel}`;
         });
+    }
+
+    // Load Spells
+    if(spells){
+        chartDefinition += `\nActions --> Spells(Spells)`
+        let spellsNode;
+
+        Object.keys(spells).forEach((key, index) => {
+            if(spells[key].Time == '1A'){
+                let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
+                let cleanSave = spells[key].Save.replace(/[^a-zA-Z0-9+]/g, '');
+
+                spellsNode += `${cleanName}`;
+                if(cleanName){
+                    spellsNode += `- ${cleanSave}`;
+                }
+                spellsNode += "<br>";
+            }
+        });
+        chartDefinition += `\nSpells --> spellsList[${spellsNode}]`;
     }
 
     flowchart.innerHTML = chartDefinition;
