@@ -39,7 +39,7 @@ input_button.addEventListener("change", e => {
 
 save_button.addEventListener("click", () => {
     html2canvas(document.querySelector(".active-flowchart"), {scale: 2, allowTaint: true, useCORS: true,
-        backgroundColor: window.getComputedStyle(document.querySelector(".active-flowchart")).backgroundColor || 'white'
+        backgroundColor: "#110F13" || 'white'
     }).then(canvas => {
         let link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
