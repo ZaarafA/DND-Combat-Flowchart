@@ -119,19 +119,19 @@ function renderFlowchart(){
     let chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
     flowchart TD;
-            Start[Start of the Round] --> Actions(Action);
-            Start --> BAs(Bonus Action);
-            Start --> Reactions(Reaction);
+            Start[Start of the Round]:::clickableNode --> Actions(Action):::clickableNode;
+            Start --> BAs(Bonus Action):::clickableNode;
+            Start --> Reactions(Reaction):::clickableNode;
     `;
 
     // RENDER MOVEMENT
     let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
-    chartDefinition += `\nStart --> Movement(Movement <br> ${movement});`
+    chartDefinition += `\nStart --> Movement(Movement <br> ${movement}):::clickableNode;`
 
     // RENDER ACTIONS
     // Load Spells
     if(spells){
-        chartDefinition += `\nActions --> Spells(Spells)`
+        chartDefinition += `\nActions --> Spells(Spells):::clickableNode`
         let spellCount = 0;
         let nodeIndex = 1;
         let spellsNode = '';
@@ -149,7 +149,7 @@ function renderFlowchart(){
                 spellCount++;
 
                 if (spellCount == 10) {
-                    chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]`;
+                    chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]:::clickableNode`;
                     nodeIndex++;
                     spellsNode = '';
                     spellCount = 0;
@@ -158,19 +158,19 @@ function renderFlowchart(){
         });
 
         if (spellsNode) {
-            chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]`;
+            chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]:::clickableNode`;
         }
     }
 
     // Load Weap Attacks
     if (weapAtks) {
-        chartDefinition += `\nActions --> Attacks(Attacks);`
+        chartDefinition += `\nActions --> Attacks(Attacks):::clickableNode;`
     
         let previousNode = "Attacks";
         Object.keys(weapAtks).forEach((key, index) => {
             let nodeName = `Weap${index}`;
             // let nodeLabel = `${nodeName}([${weapAtks[key].Name}])`;
-            let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}])`;
+            let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}]):::clickableNode`;
             chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
             previousNode = nodeName;
         });
@@ -179,7 +179,7 @@ function renderFlowchart(){
     
     // RENDER BONUS ACTIONS
     if(spells){
-        chartDefinition += `\nBAs --> BASpells(BA Spells);`
+        chartDefinition += `\nBAs --> BASpells(BA Spells):::clickableNode;`
         let spellsNode = '';
 
         Object.keys(spells).forEach((key, index) => {
@@ -194,11 +194,11 @@ function renderFlowchart(){
                 spellsNode += "<br>";
             }
         });
-        chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]`;
+        chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]:::clickableNode`;
     }
 
     // RENDER REACTIONS
-    chartDefinition += `\nReactions --> ao(Attack of Opportunity)`;
+    chartDefinition += `\nReactions --> ao(Attack of Opportunity):::clickableNode`;
     if(spells){
         let spellsNode = '';
         let previousNode = "Reactions";
@@ -206,7 +206,7 @@ function renderFlowchart(){
             if(spells[key].Time == '1R'){
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
                 spellsNode = `spell${index}([${cleanName}])`
-                chartDefinition += `\n${previousNode} --- ${spellsNode};`
+                chartDefinition += `\n${previousNode} --- ${spellsNode}:::clickableNode;`
                 previousNode = spellsNode;
             }
         });
@@ -215,5 +215,15 @@ function renderFlowchart(){
     console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
     mermaid.init(undefined, flowchart);
+
+    setTimeout(() => {
+        const clickableNodes = document.querySelectorAll('.clickableNode');
+        clickableNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                let nodeId = event.currentTarget.dataset.id;
+                alert(`Clicked on node: ${nodeId}`);
+            });
+        });
+    }, 200);
 }
 
