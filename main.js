@@ -101,15 +101,20 @@ function loadWeapAtk(){
 }
 
 function renderFlowchart(){
+    flowchart.innerHTML = '';
     flowchart.classList.add("mermaid");
     let chartDefinition = `
         flowchart TD;
             Start[Start of the Round] --> Actions(Action);
             Start --> BAs(Bonus Action);
             Start --> Reactions(Reaction);
-            Start --> Movement(Movement);
     `;
 
+    // RENDER MOVEMENT
+    let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
+    chartDefinition += `\nStart --> Movement(Movement <br> ${movement});`
+
+    // RENDER ACTIONS
     // Load Weap Attacks
     if (weapAtks) {
         chartDefinition += `Actions --> Attacks(Attacks);`
@@ -117,12 +122,12 @@ function renderFlowchart(){
         let previousNode = "Attacks";
         Object.keys(weapAtks).forEach((key, index) => {
             let nodeName = `Weap${index}`;
-            let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}])`;
+            let nodeLabel = `${nodeName}([${weapAtks[key].Name}])`;
+            // let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}])`;
             chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
             previousNode = nodeName;
         });
     }
-
     // Load Spells
     if(spells){
         chartDefinition += `\nActions --> Spells(Spells)`
@@ -134,15 +139,36 @@ function renderFlowchart(){
                 let cleanSave = spells[key].Save.replace(/[^a-zA-Z0-9+]/g, '');
 
                 spellsNode += `${cleanName}`;
-                if(cleanSave){
-                    spellsNode += `- ${cleanSave}`;
-                }
+                // if(cleanSave){
+                //     spellsNode += `- ${cleanSave}`;
+                // }
                 spellsNode += "<br>";
             }
         });
         chartDefinition += `\nSpells --> spellsList[${spellsNode}]`;
     }
 
+    // RENDER BONUS ACTIONS
+    if(spells){
+        chartDefinition += `\nBAs --> BASpells(BA Spells);`
+        let spellsNode = '';
+
+        Object.keys(spells).forEach((key, index) => {
+            if(spells[key].Time == '1BA'){
+                let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
+                let cleanSave = spells[key].Save.replace(/[^a-zA-Z0-9+]/g, '');
+
+                spellsNode += `${cleanName}`;
+                // if(cleanSave){
+                //     spellsNode += `- ${cleanSave}`;
+                // }
+                spellsNode += "<br>";
+            }
+        });
+        chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]`;
+    }
+
+    console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
     mermaid.init(undefined, flowchart);
 }
