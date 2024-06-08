@@ -111,19 +111,22 @@ function renderFlowchart(){
     `;
 
     // Load Weap Attacks
-    if(weapAtks){
-        chartDefinition += `Actions --> Attacks(Attacks)`
-
+    if (weapAtks) {
+        chartDefinition += `Actions --> Attacks(Attacks);`
+    
+        let previousNode = "Attacks";
         Object.keys(weapAtks).forEach((key, index) => {
-            let nodeLabel = `Weap${index}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]`;
-            chartDefinition += `\nAttacks --> ${nodeLabel}`;
+            let nodeName = `Weap${index}`;
+            let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}])`;
+            chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
+            previousNode = nodeName;
         });
     }
 
     // Load Spells
     if(spells){
         chartDefinition += `\nActions --> Spells(Spells)`
-        let spellsNode;
+        let spellsNode = '';
 
         Object.keys(spells).forEach((key, index) => {
             if(spells[key].Time == '1A'){
@@ -131,7 +134,7 @@ function renderFlowchart(){
                 let cleanSave = spells[key].Save.replace(/[^a-zA-Z0-9+]/g, '');
 
                 spellsNode += `${cleanName}`;
-                if(cleanName){
+                if(cleanSave){
                     spellsNode += `- ${cleanSave}`;
                 }
                 spellsNode += "<br>";
