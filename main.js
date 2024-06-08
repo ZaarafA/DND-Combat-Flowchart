@@ -3,6 +3,8 @@ save_button = document.getElementById("save-png")
 test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
 container = document.querySelector(".container");
+const popup = document.getElementById("popup");
+const popupClose = document.getElementById("popup-close");
 
 let pdfData = {};
 let spells = {}
@@ -314,3 +316,8 @@ function deleteNode(nodeId) {
         });
     }, 200);
 }
+
+popup.style.display = "flex";
+popupClose.addEventListener("click", () => {
+    popup.style.display = "none";
+});
