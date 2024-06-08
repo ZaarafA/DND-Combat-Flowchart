@@ -154,7 +154,7 @@ function renderFlowchart(){
 
                 spellCount++;
 
-                if (spellCount == 12) {
+                if (spellCount == 15) {
                     chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]:::clickableNode`;
                     nodeIndex++;
                     spellsNode = '';
