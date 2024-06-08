@@ -2,6 +2,7 @@ input_button = document.getElementById("input-button");
 save_button = document.getElementById("save-png")
 test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
+container = document.querySelector(".container");
 
 let pdfData = {};
 let spells = {}
@@ -117,6 +118,8 @@ function loadWeapAtk(){
 function renderFlowchart(){
     flowchart.innerHTML = '';
     flowchart.classList.add("mermaid");
+    flowchart.classList.add("active-flowchart");
+
     chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
     flowchart TD;
@@ -235,17 +238,20 @@ function renderFlowchart(){
 
 // Handle On-click for Nodes
 function onNodeClick(nodeId){
-    alert(`Clicked on node: ${nodeId}`);
+    // alert(`Clicked on node: ${nodeId}`);
     updateFlowchart(nodeId);
 }
 
 function updateFlowchart(nodeId){
-    console.log(chartDefinition);
+    let prev_chart = document.querySelector(".active-flowchart");
+    prev_chart.remove();
+
     chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}[New Node]:::clickableNode`;
 
     const newDiv = document.createElement("div");
     newDiv.classList.add("mermaid");
-    flowchart.insertAdjacentElement("afterend", newDiv);
+    newDiv.classList.add("active-flowchart");
+    container.appendChild(newDiv);
     
     newDiv.innerHTML = chartDefinition;
     mermaid.run(undefined, newDiv);
