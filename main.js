@@ -252,11 +252,11 @@ function onNodeClick(nodeId){
 }
 
 function updateFlowchart(nodeId){
-    node_desc = prompt("New Node: ");
+    node_desc = prompt("New Node: ") || 'null';
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
-    chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}[${node_desc}]:::clickableNode`;
+    chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}["${node_desc}"]:::clickableNode`;
 
     const newDiv = document.createElement("div");
     newDiv.classList.add("mermaid");
