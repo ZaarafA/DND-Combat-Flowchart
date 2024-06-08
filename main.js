@@ -278,10 +278,13 @@ function updateFlowchart(nodeId){
 }
 
 function deleteNode(nodeId) {
-    const nodeRegex = new RegExp(`\\n${nodeId}\\([^)]+\\)`, 'g');
-    const connectionRegex = new RegExp(`\\n.*--.*${nodeId}.*`, 'g');
+    const nodeRegex = new RegExp(`\\n${nodeId}\\[[^\\]]+\\]`, 'g');
     chartDefinition = chartDefinition.replace(nodeRegex, '');
+
+    const connectionRegex = new RegExp(`\\n.*--.*${nodeId}.*`, 'g');
     chartDefinition = chartDefinition.replace(connectionRegex, '');
+    const reverseConnectionRegex = new RegExp(`\\n${nodeId}.*--.*`, 'g');
+    chartDefinition = chartDefinition.replace(reverseConnectionRegex, '');
 
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
