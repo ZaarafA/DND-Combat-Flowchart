@@ -6,6 +6,7 @@ flowchart = document.getElementById("flowchart");
 let pdfData = {};
 let spells = {}
 let weapAtks = {};
+let chartDefinition = '';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
@@ -116,7 +117,7 @@ function loadWeapAtk(){
 function renderFlowchart(){
     flowchart.innerHTML = '';
     flowchart.classList.add("mermaid");
-    let chartDefinition = `
+    chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
     flowchart TD;
             Start[Start of the Round]:::clickableNode --> Actions(Action):::clickableNode;
@@ -148,7 +149,7 @@ function renderFlowchart(){
 
                 spellCount++;
 
-                if (spellCount == 10) {
+                if (spellCount == 12) {
                     chartDefinition += `\nSpells --> spellsNode${nodeIndex}[${spellsNode}]:::clickableNode`;
                     nodeIndex++;
                     spellsNode = '';
@@ -194,7 +195,11 @@ function renderFlowchart(){
                 spellsNode += "<br>";
             }
         });
-        chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]:::clickableNode`;
+        if (spellsNode) {
+            chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]:::clickableNode`;
+        } else {
+            chartDefinition += `\nBASpells --> BAspellsList[No Bonus Action Spells]:::clickableNode`;
+        }
     }
 
     // RENDER REACTIONS
@@ -212,18 +217,46 @@ function renderFlowchart(){
         });
     }
 
+
     console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
-    mermaid.init(undefined, flowchart);
+    mermaid.run(undefined, flowchart);
 
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
             node.addEventListener('click', () => {
                 let nodeId = event.currentTarget.dataset.id;
-                alert(`Clicked on node: ${nodeId}`);
+                onNodeClick(nodeId);
             });
         });
     }, 200);
 }
 
+// Handle On-click for Nodes
+function onNodeClick(nodeId){
+    alert(`Clicked on node: ${nodeId}`);
+    updateFlowchart(nodeId);
+}
+
+function updateFlowchart(nodeId){
+    console.log(chartDefinition);
+    chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}[New Node]:::clickableNode`;
+
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("mermaid");
+    flowchart.insertAdjacentElement("afterend", newDiv);
+    
+    newDiv.innerHTML = chartDefinition;
+    mermaid.run(undefined, newDiv);
+
+    setTimeout(() => {
+        const clickableNodes = newDiv.querySelectorAll('.clickableNode');
+        clickableNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                let nodeId = event.currentTarget.dataset.id;
+                onNodeClick(nodeId);
+            });
+        });
+    }, 200);
+}
