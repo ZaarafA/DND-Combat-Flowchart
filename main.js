@@ -238,15 +238,15 @@ function renderFlowchart(){
 
 // Handle On-click for Nodes
 function onNodeClick(nodeId){
-    // alert(`Clicked on node: ${nodeId}`);
     updateFlowchart(nodeId);
 }
 
 function updateFlowchart(nodeId){
+    node_desc = prompt("New Node: ");
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
-    chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}[New Node]:::clickableNode`;
+    chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}[${node_desc}]:::clickableNode`;
 
     const newDiv = document.createElement("div");
     newDiv.classList.add("mermaid");
@@ -266,3 +266,4 @@ function updateFlowchart(nodeId){
         });
     }, 200);
 }
+
