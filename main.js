@@ -168,6 +168,21 @@ function renderFlowchart(){
         chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]`;
     }
 
+    // RENDER REACTIONS
+    chartDefinition += `\nReactions --> ao(Attack of Opportunity)`;
+    if(spells){
+        let spellsNode = '';
+        let previousNode = "Reactions";
+        Object.keys(spells).forEach((key, index) => {
+            if(spells[key].Time == '1R'){
+                let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
+                spellsNode = `spell${index}([${cleanName}])`
+                chartDefinition += `\n${previousNode} --- ${spellsNode};`
+                previousNode = spellsNode;
+            }
+        });
+    }
+
     console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
     mermaid.init(undefined, flowchart);
