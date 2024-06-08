@@ -130,6 +130,9 @@ function renderFlowchart(){
             Start ==> Reactions(Reaction):::clickableNode;
     `;
 
+    // Render Character Details
+    chartDefinition += `\n Name{{${pdfData["CharacterName"]} <br> ${pdfData["CLASS  LEVEL"]}}} ==o Start`
+
     // RENDER MOVEMENT
     let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
     chartDefinition += `\nStart ==> Movement(Movement <br> ${movement}):::clickableNode;`
