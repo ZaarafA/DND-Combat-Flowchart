@@ -10,7 +10,7 @@ body {
 .container{
     position: relative;
 }
-.header{
+.header {
     position: fixed;
     background-color: #131927;
     padding: 0px 25px;
@@ -21,7 +21,23 @@ body {
     justify-content: space-between;
     border: solid black 3px;
     border-radius: 20px;
+    transition: all 0.3s ease;
 }
+
+.header.minimized {
+    border: none;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 15px;
+    justify-content: center;
+    align-items: center;
+}
+h2.minimized, .header-left.minimized{
+    visibility: hidden;
+}
+
+
 .flowchart, .active-flowchart{
     background-color: #110F13;
     color: aliceblue;
@@ -98,5 +114,20 @@ body {
     top: 10px;
     right: 10px;
     font-size: 24px;
+    cursor: pointer;
+}
+
+#toggle-header {
+    background-color: rgb(9, 62, 87);
+    border: solid black 2px;
+    border-radius: 6px;
+    color: white;
+    padding: 10px;
+    height: 30px;
+    width: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }

@@ -1,3 +1,4 @@
+// DOM Manipuation
 input_button = document.getElementById("input-button");
 save_button = document.getElementById("save-png")
 test_fields = document.getElementById("test-fields");
@@ -5,7 +6,10 @@ flowchart = document.getElementById("flowchart");
 container = document.querySelector(".container");
 const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
+const header = document.querySelector(".header");
+const toggleHeaderButton = document.getElementById("toggle-header");
 
+// Global Variables
 let pdfData = {};
 let spells = {}
 let weapAtks = {};
@@ -38,6 +42,7 @@ input_button.addEventListener("change", e => {
     }
 });
 
+// Save to PNG
 save_button.addEventListener("click", () => {
     html2canvas(document.querySelector(".active-flowchart"), {scale: 2, allowTaint: true, useCORS: true,
         backgroundColor: "#110F13" || 'white'
@@ -49,7 +54,8 @@ save_button.addEventListener("click", () => {
     })
 })
 
-
+// Extracts form fields and values into a dictionary
+// Prunes empty fields 
 async function extractFormFields(pdfDoc) {
     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
         const page = await pdfDoc.getPage(pageNum);
@@ -61,10 +67,10 @@ async function extractFormFields(pdfDoc) {
         });
     }
 
+    // Get the Spell and Weapon Attack data 
     console.log(pdfData);
     loadSpells();
     loadWeapAtk();
-    // renderTest();
 
     renderFlowchart();
 }
@@ -78,11 +84,12 @@ function renderTest(){
     }
 }
 
+// creates spell list object
 function loadSpells(){
-    // find number of spells
     const keys = Object.keys(pdfData).filter(key => key.startsWith("spellName"));
     spellsNum = keys.length;
     
+    // create a spell list object
     for(const key in keys){
         let num = parseInt(key.replace('spellName', ''), 10);
         spells[num] = {
@@ -96,6 +103,7 @@ function loadSpells(){
     console.log(spells);
 }
 
+// creates weapon attacks object
 function loadWeapAtk(){
     const keys = Object.keys(pdfData).filter(key => key.startsWith("Wpn Name"));
 
@@ -194,6 +202,7 @@ function renderFlowchart(){
 
         Object.keys(spells).forEach((key, index) => {
             if(spells[key].Time == '1BA'){
+                // eliminate special symbols
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
                 let cleanSave = spells[key].Save.replace(/[^a-zA-Z0-9+]/g, '');
 
@@ -252,7 +261,10 @@ function onNodeClick(nodeId){
     updateFlowchart(nodeId);
 }
 
+// When a node is added, update the Chart Definition with the new node
+// Create a new flowchart, delete the previous chart
 function updateFlowchart(nodeId){
+    // 
     node_desc = prompt("New Node: ") || 'null';
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
@@ -321,15 +333,27 @@ function deleteNode(nodeId) {
     }, 200);
 }
 
+// Pop-up Display Logic
 popup.style.display = "flex";
 document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
         popup.style.display = "none";
     }
-})
+});
 popupClose.addEventListener("click", () => {
     popup.style.display = "none";
 });
 document.querySelector("#help-button").addEventListener("click",e => {
     popup.style.display = "flex";
-})
+});
+toggleHeaderButton.addEventListener('click', () => {
+    header.classList.toggle('minimized');
+    document.querySelector(".title").classList.toggle('minimized');
+    document.querySelector(".header-left").classList.toggle('minimized');
+
+    if(header.classList.contains('minimized')){
+        toggleHeaderButton.textContent = '>>'
+    } else {
+        toggleHeaderButton.textContent = '<<'
+    }
+});
