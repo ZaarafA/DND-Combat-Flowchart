@@ -10,6 +10,7 @@ let pdfData = {};
 let spells = {}
 let weapAtks = {};
 let chartDefinition = '';
+let init_load = false;
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
@@ -321,6 +322,14 @@ function deleteNode(nodeId) {
 }
 
 popup.style.display = "flex";
+document.addEventListener("keydown", e => {
+    if(e.key === 'Escape'){
+        popup.style.display = "none";
+    }
+})
 popupClose.addEventListener("click", () => {
     popup.style.display = "none";
 });
+document.querySelector("#help-button").addEventListener("click",e => {
+    popup.style.display = "flex";
+})
