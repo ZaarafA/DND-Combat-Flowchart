@@ -36,7 +36,7 @@ body {
 }
 #input-button{
     background-color: rgb(9, 62, 87);
-    border: solid black 3px;
+    border: solid black 2px;
     border-radius: 6px;
     color: white;
     padding: 4px;
@@ -45,7 +45,7 @@ body {
 #save-png{
     height: fit-content;
     background-color: rgb(9, 62, 87);
-    border: solid black 3px;
+    border: solid black 2px;
     border-radius: 6px;
     color: white;
     padding: 6px 24px;
