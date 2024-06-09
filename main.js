@@ -339,6 +339,10 @@ document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
         popup.style.display = "none";
     }
+    else if(e.key === '/'){
+        e.preventDefault();
+        document.querySelector("#help-button").click();
+    }
 });
 popupClose.addEventListener("click", () => {
     popup.style.display = "none";

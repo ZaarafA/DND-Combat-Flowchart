@@ -11,8 +11,7 @@ body {
     position: relative;
 }
 .header {
-    position: fixed;
-    background-color: #131927;
+    background-color: rgb(33, 25, 49);
     padding: 0px 25px;
     margin: 10px;
     display: flex;
@@ -23,13 +22,16 @@ body {
     border-radius: 20px;
     transition: all 0.3s ease;
 }
+.header-left button{
+    margin-left: 8px;
+}
 
 .header.minimized {
-    border: none;
+    border: solid rgba(0, 0, 0, 0) 1px;
     width: 1px;
     height: 1px;
     padding: 0;
-    margin: 15px;
+    margin: 25px;
     justify-content: center;
     align-items: center;
 }
@@ -50,8 +52,13 @@ h2.minimized, .header-left.minimized{
     z-index: 100;
     opacity: 50%;
 }
+#credit a{
+    text-decoration: none;
+    color: #fff;
+}
+
 #input-button{
-    background-color: rgb(9, 62, 87);
+    background-color: rgb(77, 32, 107);
     border: solid black 2px;
     border-radius: 6px;
     color: white;
@@ -60,16 +67,15 @@ h2.minimized, .header-left.minimized{
 }
 #save-png{
     height: fit-content;
-    background-color: rgb(9, 62, 87);
+    background-color: rgb(77, 32, 107);
     border: solid black 2px;
     border-radius: 6px;
     color: white;
     padding: 6px 24px;
-    margin-left: 8px;
     cursor: pointer;
 }
 #help-button {
-    background-color: rgb(9, 62, 87);
+    background-color: rgb(77, 32, 107);
     border: solid black 2px;
     border-radius: 50%;
     color: white;
@@ -82,12 +88,11 @@ h2.minimized, .header-left.minimized{
     cursor: pointer;
 }
 
-.clickableNode{
-    cursor: pointer;
-    transition: box-shadow 0.3s ease-in-out;
-}
-.clickableNode:hover{
-    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.75);
+.mermaid .node {
+    cursor:pointer;
+} 
+  
+.mermaid .node *:hover {
 }
 
 .popup {
@@ -103,7 +108,7 @@ h2.minimized, .header-left.minimized{
 }
 .popup-content {
     background-color: rgb(26, 23, 32);
-    padding: 10px;
+    padding: 25px;
     border-radius: 10px;
     width: 400px;
     text-align: center;
@@ -112,13 +117,13 @@ h2.minimized, .header-left.minimized{
 .close {
     position: absolute;
     top: 10px;
-    right: 10px;
-    font-size: 24px;
+    right: 25px;
+    font-size: 40px;
     cursor: pointer;
 }
 
 #toggle-header {
-    background-color: rgb(9, 62, 87);
+    background-color: rgb(77, 32, 107);
     border: solid black 2px;
     border-radius: 6px;
     color: white;
