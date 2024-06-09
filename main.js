@@ -320,7 +320,7 @@ function deleteNode(nodeId) {
     }, 200);
 }
 
-popup.style.display = "flex";
+// popup.style.display = "flex";
 popupClose.addEventListener("click", () => {
     popup.style.display = "none";
 });

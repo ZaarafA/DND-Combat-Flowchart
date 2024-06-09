@@ -1,11 +1,56 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: #110F13;
     color: aliceblue;
 }
-
-.flowchart{
+.container{
+    position: relative;
+}
+.header{
+    position: fixed;
+    background-color: #131927;
+    padding: 0px 25px;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    border: solid black 3px;
+    border-radius: 20px;
+}
+.flowchart, .active-flowchart{
     background-color: #110F13;
     color: aliceblue;
+    padding: 10px;
+}
+#credit{
+    position: fixed;
+    bottom: 0%;
+    right: 1%;
+    z-index: 100;
+    opacity: 50%;
+}
+#input-button{
+    background-color: rgb(9, 62, 87);
+    border: solid black 3px;
+    border-radius: 6px;
+    color: white;
+    padding: 4px;
+    height: fit-content;
+}
+#save-png{
+    height: fit-content;
+    background-color: rgb(9, 62, 87);
+    border: solid black 3px;
+    border-radius: 6px;
+    color: white;
+    padding: 6px 24px;
+    margin-left: 8px;
+    cursor: pointer;
 }
 
 .clickableNode{
