@@ -23,6 +23,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 input_button.addEventListener("change", e => {
     const file = e.target.files[0]
     console.log(file)
+
     if (file.type === 'application/pdf') {
         const fileReader = new FileReader();
         
@@ -69,10 +70,14 @@ async function extractFormFields(pdfDoc) {
 
     // Get the Spell and Weapon Attack data 
     console.log(pdfData);
+
     loadSpells();
     loadWeapAtk();
 
-    renderFlowchart();
+    if(!init_load){
+        renderFlowchart();
+        init_load = true;
+    }
 }
 
 function renderTest(){
