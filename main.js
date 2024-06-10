@@ -58,6 +58,7 @@ save_button.addEventListener("click", () => {
 // Extracts form fields and values into a dictionary
 // Prunes empty fields 
 async function extractFormFields(pdfDoc) {
+    pdfData = {};
     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
         const page = await pdfDoc.getPage(pageNum);
         const annotations = await page.getAnnotations();
@@ -71,12 +72,18 @@ async function extractFormFields(pdfDoc) {
     // Get the Spell and Weapon Attack data 
     console.log(pdfData);
 
+    // reset old sheet, if any
+    spells = {};
+    weapAtks = {};
+
     loadSpells();
     loadWeapAtk();
 
     if(!init_load){
         renderFlowchart();
         init_load = true;
+    } else{
+        reloadFlowchart();
     }
 }
 
@@ -131,6 +138,8 @@ function loadWeapAtk(){
     console.log(weapAtks);
 }
 
+// TODO: The rendering logic is redundant
+// TODO: Base nodes shouldn't be deletable
 function renderFlowchart(){
     flowchart.innerHTML = '';
     flowchart.classList.add("mermaid");
@@ -241,7 +250,7 @@ function renderFlowchart(){
     }
 
 
-    console.log(chartDefinition);
+    // console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
     mermaid.run(undefined, flowchart);
 
@@ -337,6 +346,25 @@ function deleteNode(nodeId) {
         });
     }, 200);
 }
+
+/// RELOAD NEW SHEET
+function reloadFlowchart(){
+    // deletes existing flowchart, recreates it and then reruns the initial render
+    document.querySelector(".active-flowchart").remove();
+
+    // RESET values
+    let spells = {};
+    let weapAtks = {};
+    let chartDefinition = '';
+    
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("mermaid", "active-flowchart", "flowchart");
+    container.appendChild(newDiv);
+    flowchart = document.querySelector(".flowchart");
+
+    renderFlowchart();
+}
+
 
 // Pop-up Display Logic
 popup.style.display = "flex";
