@@ -75,10 +75,7 @@ async function extractFormFields(pdfDoc) {
         });
     }
 
-    // Get the Spell and Weapon Attack data 
     console.log(pdfData);
-
-    // reset old sheet, if any
     spells = {};
     weapAtks = {};
 
@@ -361,7 +358,6 @@ function setupNodes(){
                 };
 
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
-                // deleteNode(nodeId);
             });
         });
     }, 200);
@@ -404,7 +400,7 @@ toggleHeaderButton.addEventListener('click', () => {
 
 // Normalize mouse position to stop context menu from going offscreen
 const normalizePozition = (mouseX, mouseY) => {
-    // ? compute mouse position relative to the container element
+    // compute mouse position relative to the container element
     let {
       left: scopeOffsetX,
       top: scopeOffsetY,

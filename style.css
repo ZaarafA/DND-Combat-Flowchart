@@ -193,8 +193,9 @@ h2.minimized, .header-left.minimized{
 .context-menu{
     position: fixed;
     z-index: 10000;
-    width: 150px;
+    width: 100px;
     background-color: var(--dpurple);
+    border: solid var(--mpurple) 2px;
     border-radius: 5px;
     transform: scale(0);
     transform-origin: top left;
