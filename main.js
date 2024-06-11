@@ -47,7 +47,9 @@ input_button.addEventListener("change", e => {
 
 // Save to PNG
 save_button.addEventListener("click", () => {
-    // TODO: if init_load = false; break. Disable save before loading flowchart
+    if(!init_load){
+        return;
+    }
     html2canvas(document.querySelector(".active-flowchart"), {scale: 2, allowTaint: true, useCORS: true,
         backgroundColor: "#110F13" || 'white'
     }).then(canvas => {
