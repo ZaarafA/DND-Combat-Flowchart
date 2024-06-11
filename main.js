@@ -85,6 +85,7 @@ async function extractFormFields(pdfDoc) {
     loadWeapAtk();
 
     if(!init_load){
+        document.querySelector("#test-flowchart").remove();
         renderFlowchart();
         init_load = true;
     } else{
