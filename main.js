@@ -266,12 +266,12 @@ function renderFlowchart(){
 
 // Handle On-click for Nodes
 function onNodeClick(nodeId){
-    updateFlowchart(nodeId);
+    addNode(nodeId);
 }
 
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
-function updateFlowchart(nodeId){
+function addNode(nodeId){
     // 
     node_desc = prompt("New Node: ") || 'null';
     let prev_chart = document.querySelector(".active-flowchart");
