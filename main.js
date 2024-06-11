@@ -197,7 +197,7 @@ function renderFlowchart(){
         Object.keys(weapAtks).forEach((key, index) => {
             let nodeName = `Weap${index}`;
             // let nodeLabel = `${nodeName}([${weapAtks[key].Name}])`;
-            let nodeLabel = `${nodeName}([${weapAtks[key].Name}<br>${weapAtks[key].Damage}]):::clickableNode`;
+            let nodeLabel = `${nodeName}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]:::clickableNode`;
             chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
             previousNode = nodeName;
         });
@@ -206,8 +206,8 @@ function renderFlowchart(){
     
     // RENDER BONUS ACTIONS
     if(spells){
-        chartDefinition += `\nBAs --> BASpells(BA Spells):::clickableNode;`
         let spellsNode = '';
+        let hasBASpells = false;
 
         Object.keys(spells).forEach((key, index) => {
             // TODO: This is redundant, make a separate function
@@ -221,12 +221,12 @@ function renderFlowchart(){
                     spellsNode += `- ${cleanSave}`;
                 }
                 spellsNode += "<br>";
+                hasBASpells = true;
             }
         });
-        if (spellsNode) {
+        if (hasBASpells) {
+            chartDefinition += `\nBAs --> BASpells(BA Spells):::clickableNode;`
             chartDefinition += `\nBASpells --> BAspellsList[${spellsNode}]:::clickableNode`;
-        } else {
-            chartDefinition += `\nBASpells --> BAspellsList[No Bonus Action Spells]:::clickableNode`;
         }
     }
 
@@ -325,6 +325,8 @@ function editNode(nodeId){
     setupNodes();
 }
 
+
+
 /// RELOAD NEW SHEET
 function reloadFlowchart(){
     // deletes existing flowchart, recreates it and then reruns the initial render
@@ -395,6 +397,10 @@ document.addEventListener("keydown", e => {
     else if(e.key === '/'){
         e.preventDefault();
         document.querySelector("#help-button").click();
+    }
+    else if(e.key === 'd'){
+        e.preventDefault();
+        console.log(chartDefinition);
     }
 });
 document.addEventListener("click", e => {
