@@ -6,7 +6,8 @@ const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
-test_fields = document.getElementById("test-fields");
+const body = document.querySelector("body");
+const contextMenu = document.querySelector(".context-menu");
 flowchart = document.getElementById("flowchart");
 
 // Global Variables
@@ -74,10 +75,7 @@ async function extractFormFields(pdfDoc) {
         });
     }
 
-    // Get the Spell and Weapon Attack data 
     console.log(pdfData);
-
-    // reset old sheet, if any
     spells = {};
     weapAtks = {};
 
@@ -90,15 +88,6 @@ async function extractFormFields(pdfDoc) {
         init_load = true;
     } else{
         reloadFlowchart();
-    }
-}
-
-function renderTest(){
-    test_fields.innerHTML = 'LOADED PDF';
-    for(const key in pdfData){
-        const elem = document.createElement('div');
-        elem.textContent = `${key}: ${pdfData[key]}`;
-        test_fields.appendChild(elem)
     }
 }
 
@@ -337,14 +326,38 @@ function setupNodes(){
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                let nodeId = event.currentTarget.dataset.id;
+            node.addEventListener('click', e => {
+                let nodeId = e.currentTarget.dataset.id;
                 onNodeClick(nodeId);
             });
             node.addEventListener('contextmenu', e => {
                 e.preventDefault();
-                let nodeId = event.currentTarget.dataset.id;
-                deleteNode(nodeId);
+                const { clientX: mouseX, clientY: mouseY } = e;
+                const { normalizedX, normalizedY } = normalizePozition(mouseX, mouseY);
+                contextMenu.classList.remove("visible");
+                contextMenu.style.top = `${normalizedY}px`;
+                contextMenu.style.left = `${normalizedX}px`;
+        
+                setTimeout(() => {
+                  contextMenu.classList.add("visible");
+                });
+
+                let nodeId = e.currentTarget.dataset.id;
+
+                // Attach event listeners to context menu items
+                document.querySelector('.context-menu .menu-item:nth-child(1)').onclick = () => {
+                    addNode(nodeId);
+                    contextMenu.classList.remove("visible");
+                };
+                document.querySelector('.context-menu .menu-item:nth-child(2)').onclick = () => {
+                    deleteNode(nodeId);
+                    contextMenu.classList.remove("visible");
+                };
+                document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
+                    contextMenu.classList.remove("visible");
+                };
+
+                console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
             });
         });
     }, 200);
@@ -360,6 +373,11 @@ document.addEventListener("keydown", e => {
     else if(e.key === '/'){
         e.preventDefault();
         document.querySelector("#help-button").click();
+    }
+});
+document.addEventListener("click", e => {
+    if(e.target.offsetParent != contextMenu){
+        contextMenu.classList.remove("visible");
     }
 });
 popupClose.addEventListener("click", () => {
@@ -379,3 +397,31 @@ toggleHeaderButton.addEventListener('click', () => {
         toggleHeaderButton.textContent = '<<'
     }
 });
+
+// Normalize mouse position to stop context menu from going offscreen
+const normalizePozition = (mouseX, mouseY) => {
+    // compute mouse position relative to the container element
+    let {
+      left: scopeOffsetX,
+      top: scopeOffsetY,
+      right: scopeRight,
+      bottom: scopeBottom,
+    } = container.getBoundingClientRect();
+    
+    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
+    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
+   
+    const scopeX = mouseX - scopeOffsetX;
+    const scopeY = mouseY - scopeOffsetY;
+
+    let normalizedX = mouseX;
+    let normalizedY = mouseY;
+
+    if (scopeX + contextMenu.clientWidth > scopeRight) {
+      normalizedX = scopeRight - contextMenu.clientWidth;
+    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
+      normalizedY = scopeBottom - contextMenu.clientHeight;
+    }
+
+    return { normalizedX, normalizedY };
+};
