@@ -258,21 +258,7 @@ function renderFlowchart(){
     flowchart.innerHTML = chartDefinition;
     mermaid.run(undefined, flowchart);
 
-    // TODO: Repeated use, make into a separate function
-    setTimeout(() => {
-        const clickableNodes = document.querySelectorAll('.clickableNode');
-        clickableNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                let nodeId = event.currentTarget.dataset.id;
-                onNodeClick(nodeId);
-            });
-            node.addEventListener('contextmenu', e => {
-                e.preventDefault();
-                let nodeId = event.currentTarget.dataset.id;
-                deleteNode(nodeId);
-            });
-        });
-    }, 200);
+    setupNodes();
 }
 
 // Handle On-click for Nodes
@@ -298,20 +284,7 @@ function updateFlowchart(nodeId){
     newDiv.innerHTML = chartDefinition;
     mermaid.run(undefined, newDiv);
 
-    setTimeout(() => {
-        const clickableNodes = newDiv.querySelectorAll('.clickableNode');
-        clickableNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                let nodeId = event.currentTarget.dataset.id;
-                onNodeClick(nodeId);
-            });
-            node.addEventListener('contextmenu', e => {
-                e.preventDefault();
-                let nodeId = event.currentTarget.dataset.id;
-                deleteNode(nodeId);
-            });
-        });
-    }, 200);
+    setupNodes();
 }
 
 function deleteNode(nodeId) {
@@ -336,20 +309,7 @@ function deleteNode(nodeId) {
     newDiv.innerHTML = chartDefinition;
     mermaid.run(undefined, newDiv);
 
-    setTimeout(() => {
-        const clickableNodes = newDiv.querySelectorAll('.clickableNode');
-        clickableNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                let nodeId = event.currentTarget.dataset.id;
-                onNodeClick(nodeId);
-            });
-            node.addEventListener('contextmenu', e => {
-                e.preventDefault();
-                let nodeId = event.currentTarget.dataset.id;
-                deleteNode(nodeId);
-            });
-        });
-    }, 200);
+    setupNodes();
 }
 
 /// RELOAD NEW SHEET
@@ -370,6 +330,22 @@ function reloadFlowchart(){
     renderFlowchart();
 }
 
+function setupNodes(){
+    setTimeout(() => {
+        const clickableNodes = document.querySelectorAll('.clickableNode');
+        clickableNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                let nodeId = event.currentTarget.dataset.id;
+                onNodeClick(nodeId);
+            });
+            node.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                let nodeId = event.currentTarget.dataset.id;
+                deleteNode(nodeId);
+            });
+        });
+    }, 200);
+}
 
 // Pop-up Display Logic
 // TODO: Refactor and separate into new file
