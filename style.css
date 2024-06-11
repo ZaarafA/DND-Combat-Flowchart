@@ -92,7 +92,10 @@ h2.minimized, .header-left.minimized{
     cursor:pointer;
 } 
   
-.mermaid .node *:hover {
+.mermaid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .popup {
