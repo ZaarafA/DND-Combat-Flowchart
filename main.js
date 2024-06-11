@@ -304,6 +304,27 @@ function deleteNode(nodeId) {
     setupNodes();
 }
 
+function editNode(nodeId){
+    let new_desc = prompt("Edit Node: ") || "null";
+    let nodeRegex = new RegExp(`(${nodeId}\\[)[^\\]]+(\\])`);
+    chartDefinition = chartDefinition.replace(nodeRegex, `$1${new_desc}$2`);
+
+    let prev_chart = document.querySelector(".active-flowchart");
+    if (prev_chart) {
+        prev_chart.remove();
+    }
+
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("mermaid");
+    newDiv.classList.add("active-flowchart");
+    container.appendChild(newDiv);
+
+    newDiv.innerHTML = chartDefinition;
+    mermaid.run(undefined, newDiv);
+
+    setupNodes();
+}
+
 /// RELOAD NEW SHEET
 function reloadFlowchart(){
     // deletes existing flowchart, recreates it and then reruns the initial render
@@ -354,6 +375,7 @@ function setupNodes(){
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
+                    editNode(nodeId);
                     contextMenu.classList.remove("visible");
                 };
 
