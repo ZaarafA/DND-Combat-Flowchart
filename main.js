@@ -6,6 +6,7 @@ const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
+const contextMenu = document.querySelector(".context-menu");
 test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
 
@@ -341,10 +342,21 @@ function setupNodes(){
                 let nodeId = event.currentTarget.dataset.id;
                 onNodeClick(nodeId);
             });
+            // node.addEventListener('contextmenu', e => {
+            //     e.preventDefault();
+            //     let nodeId = event.currentTarget.dataset.id;
+            //     deleteNode(nodeId);
+            // });
             node.addEventListener('contextmenu', e => {
                 e.preventDefault();
-                let nodeId = event.currentTarget.dataset.id;
-                deleteNode(nodeId);
+                const { clientX: mouseX, clientY: mouseY } = e;
+                contextMenu.style.left = `${mouseX}px`;
+                contextMenu.style.top = `${mouseY}px`;
+                contextMenu.classList.add("visible");
+
+                let nodeId = e.currentTarget.dataset.id;
+                console.log(`(${mouseX},${mouseY}) - ${nodeId}`)
+                // deleteNode(nodeId);
             });
         });
     }, 200);
