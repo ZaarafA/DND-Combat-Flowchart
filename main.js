@@ -6,6 +6,7 @@ const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
+const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
 test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
@@ -338,24 +339,24 @@ function setupNodes(){
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                let nodeId = event.currentTarget.dataset.id;
+            node.addEventListener('click', e => {
+                let nodeId = e.currentTarget.dataset.id;
                 onNodeClick(nodeId);
             });
-            // node.addEventListener('contextmenu', e => {
-            //     e.preventDefault();
-            //     let nodeId = event.currentTarget.dataset.id;
-            //     deleteNode(nodeId);
-            // });
             node.addEventListener('contextmenu', e => {
                 e.preventDefault();
                 const { clientX: mouseX, clientY: mouseY } = e;
-                contextMenu.style.left = `${mouseX}px`;
-                contextMenu.style.top = `${mouseY}px`;
-                contextMenu.classList.add("visible");
+                const { normalizedX, normalizedY } = normalizePozition(mouseX, mouseY);
+                contextMenu.classList.remove("visible");
+                contextMenu.style.top = `${normalizedY}px`;
+                contextMenu.style.left = `${normalizedX}px`;
+        
+                setTimeout(() => {
+                  contextMenu.classList.add("visible");
+                });
 
                 let nodeId = e.currentTarget.dataset.id;
-                console.log(`(${mouseX},${mouseY}) - ${nodeId}`)
+                console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
                 // deleteNode(nodeId);
             });
         });
@@ -372,6 +373,11 @@ document.addEventListener("keydown", e => {
     else if(e.key === '/'){
         e.preventDefault();
         document.querySelector("#help-button").click();
+    }
+});
+document.addEventListener("click", e => {
+    if(e.target.offsetParent != contextMenu){
+        contextMenu.classList.remove("visible");
     }
 });
 popupClose.addEventListener("click", () => {
@@ -391,3 +397,42 @@ toggleHeaderButton.addEventListener('click', () => {
         toggleHeaderButton.textContent = '<<'
     }
 });
+
+// Normalize mouse position to stop context menu from going offscreen
+const normalizePozition = (mouseX, mouseY) => {
+    // ? compute what is the mouse position relative to the container element (scope)
+    let {
+      left: scopeOffsetX,
+      top: scopeOffsetY,
+      right: scopeRight,
+      bottom: scopeBottom,
+    } = body.getBoundingClientRect();
+    
+    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
+    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
+   
+    const scopeX = mouseX - scopeOffsetX;
+    const scopeY = mouseY - scopeOffsetY;
+
+    // ? check if the element will go out of bounds
+    const outOfBoundsOnX =
+      scopeX + contextMenu.clientWidth > scopeRight;
+
+    const outOfBoundsOnY =
+      scopeY + contextMenu.clientHeight > scopeBottom;
+
+    let normalizedX = mouseX;
+    let normalizedY = mouseY;
+
+    // ? normalize on X
+    if (outOfBoundsOnX) {
+      normalizedX = scopeRight - contextMenu.clientWidth;
+    }
+
+    // ? normalize on Y
+    if (outOfBoundsOnY) {
+      normalizedY = scopeBottom - contextMenu.clientHeight;
+    }
+
+    return { normalizedX, normalizedY };
+};
