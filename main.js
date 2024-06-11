@@ -8,7 +8,6 @@ const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
 const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
-test_fields = document.getElementById("test-fields");
 flowchart = document.getElementById("flowchart");
 
 // Global Variables
@@ -92,15 +91,6 @@ async function extractFormFields(pdfDoc) {
         init_load = true;
     } else{
         reloadFlowchart();
-    }
-}
-
-function renderTest(){
-    test_fields.innerHTML = 'LOADED PDF';
-    for(const key in pdfData){
-        const elem = document.createElement('div');
-        elem.textContent = `${key}: ${pdfData[key]}`;
-        test_fields.appendChild(elem)
     }
 }
 
