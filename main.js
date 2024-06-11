@@ -356,6 +356,20 @@ function setupNodes(){
                 });
 
                 let nodeId = e.currentTarget.dataset.id;
+
+                // Attach event listeners to context menu items
+                document.querySelector('.context-menu .menu-item:nth-child(1)').onclick = () => {
+                    addNode(nodeId);
+                    contextMenu.classList.remove("visible");
+                };
+                document.querySelector('.context-menu .menu-item:nth-child(2)').onclick = () => {
+                    deleteNode(nodeId);
+                    contextMenu.classList.remove("visible");
+                };
+                document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
+                    contextMenu.classList.remove("visible");
+                };
+
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
                 // deleteNode(nodeId);
             });
@@ -400,13 +414,13 @@ toggleHeaderButton.addEventListener('click', () => {
 
 // Normalize mouse position to stop context menu from going offscreen
 const normalizePozition = (mouseX, mouseY) => {
-    // ? compute what is the mouse position relative to the container element (scope)
+    // ? compute mouse position relative to the container element
     let {
       left: scopeOffsetX,
       top: scopeOffsetY,
       right: scopeRight,
       bottom: scopeBottom,
-    } = body.getBoundingClientRect();
+    } = container.getBoundingClientRect();
     
     scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
     scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
@@ -414,23 +428,12 @@ const normalizePozition = (mouseX, mouseY) => {
     const scopeX = mouseX - scopeOffsetX;
     const scopeY = mouseY - scopeOffsetY;
 
-    // ? check if the element will go out of bounds
-    const outOfBoundsOnX =
-      scopeX + contextMenu.clientWidth > scopeRight;
-
-    const outOfBoundsOnY =
-      scopeY + contextMenu.clientHeight > scopeBottom;
-
     let normalizedX = mouseX;
     let normalizedY = mouseY;
 
-    // ? normalize on X
-    if (outOfBoundsOnX) {
+    if (scopeX + contextMenu.clientWidth > scopeRight) {
       normalizedX = scopeRight - contextMenu.clientWidth;
-    }
-
-    // ? normalize on Y
-    if (outOfBoundsOnY) {
+    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
       normalizedY = scopeBottom - contextMenu.clientHeight;
     }
 
