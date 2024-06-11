@@ -1,13 +1,13 @@
 // DOM Manipuation
-input_button = document.getElementById("input-button");
-save_button = document.getElementById("save-png")
-test_fields = document.getElementById("test-fields");
-flowchart = document.getElementById("flowchart");
-container = document.querySelector(".container");
+const input_button = document.getElementById("input-button");
+const save_button = document.getElementById("save-png")
+const container = document.querySelector(".container");
 const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
+test_fields = document.getElementById("test-fields");
+flowchart = document.getElementById("flowchart");
 
 // Global Variables
 let pdfData = {};
@@ -18,6 +18,8 @@ let init_load = false;
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
+
+// TODO: Refactoring
 
 // PDF Upload
 input_button.addEventListener("change", e => {
@@ -45,6 +47,7 @@ input_button.addEventListener("change", e => {
 
 // Save to PNG
 save_button.addEventListener("click", () => {
+    // TODO: if init_load = false; break. Disable save before loading flowchart
     html2canvas(document.querySelector(".active-flowchart"), {scale: 2, allowTaint: true, useCORS: true,
         backgroundColor: "#110F13" || 'white'
     }).then(canvas => {
@@ -215,6 +218,7 @@ function renderFlowchart(){
         let spellsNode = '';
 
         Object.keys(spells).forEach((key, index) => {
+            // TODO: This is redundant, make a separate function
             if(spells[key].Time == '1BA'){
                 // eliminate special symbols
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -254,6 +258,7 @@ function renderFlowchart(){
     flowchart.innerHTML = chartDefinition;
     mermaid.run(undefined, flowchart);
 
+    // TODO: Repeated use, make into a separate function
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
@@ -367,6 +372,7 @@ function reloadFlowchart(){
 
 
 // Pop-up Display Logic
+// TODO: Refactor and separate into new file
 popup.style.display = "flex";
 document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
