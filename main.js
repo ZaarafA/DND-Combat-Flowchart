@@ -11,7 +11,7 @@ const toggleHeaderButton = document.getElementById("toggle-header");
 const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
-flowchart = document.querySelector(".flowchart");
+let flowchart = document.querySelector(".flowchart");
 
 // Global Variables
 let pdfData = {};
