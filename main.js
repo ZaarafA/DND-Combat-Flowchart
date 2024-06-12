@@ -1,3 +1,5 @@
+import { dndClasses } from './class_data.js';
+
 // DOM Manipuation
 const input_button = document.getElementById("input-button");
 const save_button = document.getElementById("save-png")
@@ -14,6 +16,7 @@ flowchart = document.getElementById("flowchart");
 let pdfData = {};
 let spells = {}
 let weapAtks = {};
+let pc_info = {};
 let chartDefinition = '';
 let init_load = false;
 
@@ -21,6 +24,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
 
 // TODO: Refactoring
+// TODO: Use mermaid.parse to validate change. If failed, reset
 
 // PDF Upload
 input_button.addEventListener("change", e => {
@@ -78,9 +82,11 @@ async function extractFormFields(pdfDoc) {
     console.log(pdfData);
     spells = {};
     weapAtks = {};
+    pc_info = {};
 
     loadSpells();
     loadWeapAtk();
+    loadCharacterData();
 
     if(!init_load){
         document.querySelector("#test-flowchart").remove();
@@ -95,7 +101,7 @@ async function extractFormFields(pdfDoc) {
 // creates spell list object
 function loadSpells(){
     const keys = Object.keys(pdfData).filter(key => key.startsWith("spellName"));
-    spellsNum = keys.length;
+    let spellsNum = keys.length;
     
     // create a spell list object
     for(const key in keys){
@@ -134,6 +140,41 @@ function loadWeapAtk(){
     console.log(weapAtks);
 }
 
+// references the class data objects 
+// and loads any unlocked class features into an array
+function loadCharacterData(){
+    pc_info = {
+        Name: `${pdfData["CharacterName"]}`,
+        Init: `${pdfData["Init"]}`,
+        AC: `${pdfData["AC"]}`,
+        ClassLevel: pdfData["CLASS  LEVEL"].split(" / "),
+        ClassFeatures: [],
+        featContains: {
+            "1R": false,
+            "1A": false,
+            "1BA": false,
+        }
+    }
+    // Class data
+    pc_info["ClassLevel"].forEach(classItem => {
+        let [className, classLevel] = classItem.split(" ");
+        classLevel = parseInt(classLevel, 10);
+
+        console.log(`Checking: ${className} \n ${dndClasses[className]}`);
+        if (dndClasses[className]) {
+            Object.entries(dndClasses[className]).forEach(([level, features]) => {
+                console.log("Checking:  " + level + " : " + features);
+                level = parseInt(level, 10);
+                if (level <= classLevel) {
+                    pc_info["ClassFeatures"].push(features);
+                    pc_info["featContains"][features[1]] = true;
+                }
+            });
+        }
+    });
+    console.log(pc_info);
+}
+
 // TODO: The rendering logic is redundant
 // TODO: Base nodes shouldn't be deletable
 function renderFlowchart(){
@@ -150,7 +191,8 @@ function renderFlowchart(){
     `;
 
     // Render Character Details
-    chartDefinition += `\n Name{{${pdfData["CharacterName"]} <br> ${pdfData["CLASS  LEVEL"]}}} ==o Start`
+    // TODO: Note: Don't need to sanatize info, just encapsulate it in quotes
+    chartDefinition += `\n Name{{"${pdfData["CharacterName"]}" <br> ${pdfData["CLASS  LEVEL"]}}} ==o Start`
 
     // RENDER MOVEMENT
     let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
@@ -241,6 +283,45 @@ function renderFlowchart(){
                 spellsNode = `spell${index}([${cleanName}])`
                 chartDefinition += `\n${previousNode} --- ${spellsNode}:::clickableNode;`
                 previousNode = spellsNode;
+            }
+        });
+    }
+
+    // RENDER CLASS FEATURES
+    if(pc_info.ClassFeatures){
+        let lastA = '';
+        let lastBA = '';
+
+        if(pc_info.featContains["1A"]){
+            chartDefinition += `\nActions --> AFeatures[Features]`;
+        }if(pc_info.featContains["1BA"]){
+            chartDefinition += `\nActions --> BAFeatures[Features]`;
+        }
+
+        pc_info.ClassFeatures.forEach(feat => {
+            if(feat[1] === "1R"){
+                chartDefinition += `\nReactions --> ${Math.floor(100000 + Math.random() * 900000)}(${feat[0]}):::clickableNode`;
+            } else if(feat[1] === "1A"){
+                // if this is the first feature action, create a head node
+                // if there's already a feature action, add this as a descendant of the previous node
+                if(!lastA){
+                    lastA = Math.floor(100000 + Math.random() * 900000);
+                    chartDefinition += `\nAFeatures --> ${lastA}(${feat[0]}):::clickableNode`;
+                } else{
+                    chartDefinition += `\n${lastA} --> `;
+                    lastA = Math.floor(100000 + Math.random() * 900000);
+                    chartDefinition += `${lastA}(${feat[0]}):::clickableNode`;
+                }
+            } else if(feat[1] === "1BA"){
+                if(!lastBA){
+                    lastBA = Math.floor(100000 + Math.random() * 900000);
+                    chartDefinition += `\nBAFeatures --> ${lastBA}(${feat[0]}):::clickableNode`;
+                } else{
+                    chartDefinition += `\n${lastBA} --> `;
+                    lastBA = Math.floor(100000 + Math.random() * 900000);
+                    chartDefinition += `${lastBA}(${feat[0]}):::clickableNode`;
+                }
+                chartDefinition += `\nBAFeatures --> ${Math.floor(100000 + Math.random() * 900000)}(${feat[0]}):::clickableNode`;
             }
         });
     }
