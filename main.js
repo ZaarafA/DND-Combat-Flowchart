@@ -84,6 +84,7 @@ async function extractFormFields(pdfDoc) {
 
     if(!init_load){
         document.querySelector("#test-flowchart").remove();
+        document.querySelector(".arrow").remove();
         renderFlowchart();
         init_load = true;
     } else{
@@ -306,8 +307,11 @@ function deleteNode(nodeId) {
 
 function editNode(nodeId){
     let new_desc = prompt("Edit Node: ") || "null";
-    let nodeRegex = new RegExp(`(${nodeId}\\[)[^\\]]+(\\])`);
-    chartDefinition = chartDefinition.replace(nodeRegex, `$1${new_desc}$2`);
+    let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
+
+    chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
+        return `${nodeId}${p1.charAt(0)}${new_desc}${p1.charAt(p1.length - 1)}`;
+    });
 
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
@@ -349,11 +353,11 @@ function setupNodes(){
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
+            // node.addEventListener('click', e => {
+            //     let nodeId = e.currentTarget.dataset.id;
+            //     onNodeClick(nodeId);
+            // });
             node.addEventListener('click', e => {
-                let nodeId = e.currentTarget.dataset.id;
-                onNodeClick(nodeId);
-            });
-            node.addEventListener('contextmenu', e => {
                 e.preventDefault();
                 const { clientX: mouseX, clientY: mouseY } = e;
                 const { normalizedX, normalizedY } = normalizePozition(mouseX, mouseY);
