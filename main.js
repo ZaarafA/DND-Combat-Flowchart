@@ -377,6 +377,7 @@ function deleteNode(nodeId) {
 
 function editNode(nodeId){
     let new_desc = document.querySelector("#menu-input").value || "null";
+    new_desc =  new_desc.replace(/[^a-zA-Z0-9+ ]/g, '');
     document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
