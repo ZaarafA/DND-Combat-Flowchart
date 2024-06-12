@@ -282,7 +282,7 @@ function renderFlowchart(){
         Object.keys(spells).forEach((key, index) => {
             if(spells[key].Time == '1R'){
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
-                spellsNode = `spell${index}([${cleanName}])`
+                spellsNode = `spell${index}(${cleanName})`
                 chartDefinition += `\n${previousNode} --- ${spellsNode}:::clickableNode;`
                 previousNode = spellsNode;
             }
