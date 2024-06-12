@@ -216,7 +216,7 @@ function renderFlowchart(){
                 if(cleanSave){
                     spellsNode += `: ${cleanSave}`;
                 }
-                spellsNode += "<br>";
+                spellsNode += " <br> ";
 
                 spellCount++;
 
@@ -242,7 +242,7 @@ function renderFlowchart(){
         Object.keys(weapAtks).forEach((key, index) => {
             let nodeName = `Weap${index}`;
             // let nodeLabel = `${nodeName}([${weapAtks[key].Name}])`;
-            let nodeLabel = `${nodeName}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]:::clickableNode`;
+            let nodeLabel = `${nodeName}[${weapAtks[key].Name} <br> ${weapAtks[key].Damage}]:::clickableNode`;
             chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
             previousNode = nodeName;
         });
@@ -264,7 +264,7 @@ function renderFlowchart(){
                 if(cleanSave){
                     spellsNode += `- ${cleanSave}`;
                 }
-                spellsNode += "<br>";
+                spellsNode += " <br> ";
                 hasBASpells = true;
             }
         });
