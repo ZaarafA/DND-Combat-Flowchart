@@ -192,7 +192,7 @@ function renderFlowchart(){
 
     // Render Character Details
     // TODO: Note: Don't need to sanatize info, just encapsulate it in quotes
-    chartDefinition += `\n Name{{"${pdfData["CharacterName"]}" <br> ${pdfData["CLASS  LEVEL"]}}} ==o Start`
+    chartDefinition += `\n Name{{"${pdfData["CharacterName"]}" <br> AC: ${pc_info.AC}, Init. Bonus: ${pc_info.Init}}} ==o Start`
 
     // RENDER MOVEMENT
     let movement =  pdfData["Speed"].replace(/[^a-zA-Z0-9+ ]/g, '');
