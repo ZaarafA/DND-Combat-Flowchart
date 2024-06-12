@@ -259,6 +259,17 @@ function onNodeClick(nodeId){
     addNode(nodeId);
 }
 
+// HELPER: Creates a new flowchart and loads definitions
+function refreshFlowchart(){
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("mermaid");
+    newDiv.classList.add("active-flowchart");
+    container.appendChild(newDiv);
+    
+    newDiv.innerHTML = chartDefinition;
+    mermaid.run(undefined, newDiv);
+}
+
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
@@ -269,14 +280,7 @@ function addNode(nodeId){
 
     chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}["${node_desc}"]:::clickableNode`;
 
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid");
-    newDiv.classList.add("active-flowchart");
-    container.appendChild(newDiv);
-    
-    newDiv.innerHTML = chartDefinition;
-    mermaid.run(undefined, newDiv);
-
+    refreshFlowchart();
     setupNodes();
 }
 
@@ -294,14 +298,7 @@ function deleteNode(nodeId) {
         prev_chart.remove();
     }
 
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid");
-    newDiv.classList.add("active-flowchart");
-    container.appendChild(newDiv);
-
-    newDiv.innerHTML = chartDefinition;
-    mermaid.run(undefined, newDiv);
-
+    refreshFlowchart();
     setupNodes();
 }
 
@@ -318,14 +315,7 @@ function editNode(nodeId){
         prev_chart.remove();
     }
 
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid");
-    newDiv.classList.add("active-flowchart");
-    container.appendChild(newDiv);
-
-    newDiv.innerHTML = chartDefinition;
-    mermaid.run(undefined, newDiv);
-
+    refreshFlowchart();
     setupNodes();
 }
 
