@@ -241,3 +241,32 @@ h2.minimized, .header-left.minimized{
         transform: translateY(-5px);
     }
 }
+
+/* ADD, EDIT MENU */
+.node-menu{
+    z-index: 10000;
+    width: fit-content;
+    padding: 15px;
+    background-color: var(--dpurple);
+    border: solid var(--mpurple) 2px;
+    border-radius: 5px;
+    transform: scale(0);
+    transform-origin: top left;
+}
+.node-menu textarea{
+    resize: none;
+}
+.node-menu.visible{
+    transform: scale(1);
+    transition: transform 200ms ease-in-out;
+}
+.node-menu button{
+    height: fit-content;
+    background-color: rgb(77, 32, 107);
+    border: solid black 2px;
+    border-radius: 6px;
+    color: white;
+    padding: 6px 24px;
+    cursor: pointer;
+    margin-top: 6px;
+}
