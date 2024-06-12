@@ -295,7 +295,7 @@ function renderFlowchart(){
         if(pc_info.featContains["1A"]){
             chartDefinition += `\nActions --> AFeatures[Features]`;
         }if(pc_info.featContains["1BA"]){
-            chartDefinition += `\nActions --> BAFeatures[Features]`;
+            chartDefinition += `\nBAs --> BAFeatures[Features]`;
         }
 
         pc_info.ClassFeatures.forEach(feat => {
@@ -321,7 +321,6 @@ function renderFlowchart(){
                     lastBA = Math.floor(100000 + Math.random() * 900000);
                     chartDefinition += `${lastBA}(${feat[0]}):::clickableNode`;
                 }
-                chartDefinition += `\nBAFeatures --> ${Math.floor(100000 + Math.random() * 900000)}(${feat[0]}):::clickableNode`;
             }
         });
     }

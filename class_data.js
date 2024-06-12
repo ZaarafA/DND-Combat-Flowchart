@@ -10,6 +10,9 @@ export const dndClasses = {
     2: ["Channel Divinity", "1A"],
     10: ["Divine Intervention", "1A"],
   },
+  Druid: {
+    2: ["Wild Shape", "1A"],
+  },
   Fighter: {
     1: ["Second Wind", "1BA"],
   },
