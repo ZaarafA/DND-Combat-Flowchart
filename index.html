@@ -47,7 +47,7 @@
             %%{init: {'theme': 'dark'}}%%
             flowchart TD;
             A{{Get Started!}} --> B[Load a Character Sheet PDF]
-            B ---> |"Fillable Field PDF <br> ex. from D&DBeyond"|C[Click on a Node to <br>Edit the Flowchart]
+            B ---> |"from D&DBeyond <br> (more options coming)"|C[Click on a Node to <br>Edit the Flowchart]
             C --> E([Add: creates a child Node])
             C --> F([Delete: deletes node and all descendents])
             C --> G([Edit: Edit Node description])
@@ -62,7 +62,7 @@
         <div class="node-menu">
             <label for="menu-input">Description:</label><br>
             <textarea name="menu-input" id="menu-input" placeholder="Type here..." rows="2" cols="30"></textarea>
-            <br><button type="button">Enter</button>
+            <br><button type="button" id="menu-submit">Enter</button>
         </div>
     </div>
 </body>

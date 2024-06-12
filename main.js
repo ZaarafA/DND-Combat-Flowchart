@@ -10,6 +10,7 @@ const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
 const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
+const nodeMenu = document.querySelector(".node-menu");
 flowchart = document.getElementById("flowchart");
 
 // Global Variables
@@ -17,6 +18,7 @@ let pdfData = {};
 let spells = {}
 let weapAtks = {};
 let pc_info = {};
+let currAction = '';
 let chartDefinition = '';
 let init_load = false;
 
@@ -214,7 +216,7 @@ function renderFlowchart(){
                 if(cleanSave){
                     spellsNode += `: ${cleanSave}`;
                 }
-                spellsNode += "<br>";
+                spellsNode += " <br> ";
 
                 spellCount++;
 
@@ -240,7 +242,7 @@ function renderFlowchart(){
         Object.keys(weapAtks).forEach((key, index) => {
             let nodeName = `Weap${index}`;
             // let nodeLabel = `${nodeName}([${weapAtks[key].Name}])`;
-            let nodeLabel = `${nodeName}[${weapAtks[key].Name}<br>${weapAtks[key].Damage}]:::clickableNode`;
+            let nodeLabel = `${nodeName}[${weapAtks[key].Name} <br> ${weapAtks[key].Damage}]:::clickableNode`;
             chartDefinition += `\n${previousNode} --- ${nodeLabel};`;
             previousNode = nodeName;
         });
@@ -262,7 +264,7 @@ function renderFlowchart(){
                 if(cleanSave){
                     spellsNode += `- ${cleanSave}`;
                 }
-                spellsNode += "<br>";
+                spellsNode += " <br> ";
                 hasBASpells = true;
             }
         });
@@ -280,7 +282,7 @@ function renderFlowchart(){
         Object.keys(spells).forEach((key, index) => {
             if(spells[key].Time == '1R'){
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
-                spellsNode = `spell${index}([${cleanName}])`
+                spellsNode = `spell${index}(${cleanName})`
                 chartDefinition += `\n${previousNode} --- ${spellsNode}:::clickableNode;`
                 previousNode = spellsNode;
             }
@@ -293,9 +295,9 @@ function renderFlowchart(){
         let lastBA = '';
 
         if(pc_info.featContains["1A"]){
-            chartDefinition += `\nActions --> AFeatures[Features]`;
+            chartDefinition += `\nActions --> AFeatures[Features]:::clickableNode`;
         }if(pc_info.featContains["1BA"]){
-            chartDefinition += `\nBAs --> BAFeatures[Features]`;
+            chartDefinition += `\nBAs --> BAFeatures[Features]:::clickableNode`;
         }
 
         pc_info.ClassFeatures.forEach(feat => {
@@ -344,7 +346,8 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
-    node_desc = prompt("New Node: ") || 'null';
+    let node_desc = document.getElementById('menu-input').value || 'null';
+    document.querySelector("#menu-input").value = "";
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
@@ -373,7 +376,9 @@ function deleteNode(nodeId) {
 }
 
 function editNode(nodeId){
-    let new_desc = prompt("Edit Node: ") || "null";
+    let new_desc = document.querySelector("#menu-input").value || "null";
+    new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '');
+    document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
     chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
@@ -429,7 +434,8 @@ function setupNodes(){
 
                 // Attach event listeners to context menu items
                 document.querySelector('.context-menu .menu-item:nth-child(1)').onclick = () => {
-                    addNode(nodeId);
+                    nodeMenu.classList.add("visible");
+                    currAction = `ADD ${nodeId}`;
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(2)').onclick = () => {
@@ -437,7 +443,17 @@ function setupNodes(){
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
-                    editNode(nodeId);
+                    // fill with existing node data
+                    let prev_regex = new RegExp(`\\b${nodeId}(\\[\\(([^\\)]*)\\)\\]|\\[([^\\]]*)\\]|\\(([^\\)]*)\\))`, 'g');
+                    let match = prev_regex.exec(chartDefinition);
+                    let description = '';
+                    if (match) {
+                        description = match[2] || match[3] || match[4] || '';
+                    }
+                    document.getElementById('menu-input').value = description;
+                    
+                    currAction = `EDIT ${nodeId}`;
+                    nodeMenu.classList.add("visible");
                     contextMenu.classList.remove("visible");
                 };
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
@@ -512,3 +528,12 @@ const normalizePozition = (mouseX, mouseY) => {
 
     return { normalizedX, normalizedY };
 };
+
+document.querySelector("#menu-submit").addEventListener("click", e => {
+    if(currAction.split(" ")[0] === "ADD"){
+        addNode(currAction.split(" ")[1]);
+    } else if(currAction.split(" ")[0] === "EDIT"){
+        editNode(currAction.split(" ")[1]);
+    }
+    nodeMenu.classList.remove("visible")
+})
