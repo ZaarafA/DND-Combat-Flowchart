@@ -203,7 +203,6 @@ function renderFlowchart(){
             previousNode = nodeName;
         });
     }
-
     
     // RENDER BONUS ACTIONS
     if(spells){
@@ -246,11 +245,8 @@ function renderFlowchart(){
         });
     }
 
-
-    // console.log(chartDefinition);
     flowchart.innerHTML = chartDefinition;
     mermaid.run(undefined, flowchart);
-
     setupNodes();
 }
 
@@ -268,7 +264,6 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
-    // 
     node_desc = prompt("New Node: ") || 'null';
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
@@ -338,10 +333,6 @@ function setupNodes(){
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
-            // node.addEventListener('click', e => {
-            //     let nodeId = e.currentTarget.dataset.id;
-            //     onNodeClick(nodeId);
-            // });
             node.addEventListener('click', e => {
                 e.preventDefault();
                 const { clientX: mouseX, clientY: mouseY } = e;
@@ -369,7 +360,6 @@ function setupNodes(){
                     editNode(nodeId);
                     contextMenu.classList.remove("visible");
                 };
-
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
             });
         });
