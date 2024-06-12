@@ -23,6 +23,9 @@
             <h2 class="title">D&D Combat Flowchart Builder</h2>
             <button id="toggle-header"> << </button>
         </div>
+        <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2L5 9h5v13h4V9h5z" fill="rgb(77, 32, 107)"/>
+        </svg>
         <div class="popup" id="popup">
             <div class="popup-content">
                 <span class="close" id="popup-close">&times;</span>
@@ -43,9 +46,11 @@
             %%{init: {'theme': 'dark'}}%%
             flowchart TD;
             A{{Get Started!}} --> B[Load a Character Sheet PDF]
-            B ---> |"Fillable Field PDF <br> ex. from D&DBeyond"|C[Edit the Flowchart]
-            C --> D([Click on a node to add a child])
-            C --> E([Right-Click to delete a node])
+            B ---> |"Fillable Field PDF <br> ex. from D&DBeyond"|C[Click on a Node to <br>Edit the Flowchart]
+            C --> E([Add: creates a child Node])
+            C --> F([Delete: deletes node and all descendents])
+            C --> G([Edit: Edit Node description])
+
         </div>
 
         <div class="context-menu">
