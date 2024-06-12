@@ -1,16 +1,12 @@
-const dndClasses = {
+export const dndClasses = {
   Barbarian: {
     1: ["Rage", "1BA"],
   },
   Bard: {
-    1: ["Bardic Inspiration", "1BA", "d6"],
-    5: ["Bardic Inspiration", "1BA", "d8"],
+    1: ["Bardic Inspiration", "1BA"],
     6: ["Countercharm", "1A"],
-    10: ["Bardic Inspiration", "1BA", "d10"],
-    15: ["Bardic Inspiration", "1BA", "d12"],
   },
   Cleric: {
-    1: ["Spellcasting", "Divine Domain"],
     2: ["Channel Divinity", "1A"],
     10: ["Divine Intervention", "1A"],
   },
@@ -34,6 +30,8 @@ const dndClasses = {
   Warlock: {
   },
   Wizard: {
+  },
+  Artificer: {
   },
   BloodHunter: {
     2: ["Crimson Rite", "1BA"], 
