@@ -10,6 +10,7 @@ const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
 const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
+const nodeMenu = document.querySelector(".node-menu");
 flowchart = document.getElementById("flowchart");
 
 // Global Variables
@@ -344,7 +345,7 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
-    node_desc = prompt("New Node: ") || 'null';
+    let node_desc = prompt("New Node: ") || 'null';
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
@@ -429,6 +430,7 @@ function setupNodes(){
 
                 // Attach event listeners to context menu items
                 document.querySelector('.context-menu .menu-item:nth-child(1)').onclick = () => {
+                    // nodeMenu.classList.add("visible");
                     addNode(nodeId);
                     contextMenu.classList.remove("visible");
                 };

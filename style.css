@@ -243,24 +243,32 @@ h2.minimized, .header-left.minimized{
 }
 
 /* ADD, EDIT MENU */
-.node-menu{
-    z-index: 10000;
+.node-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 10001;
     width: fit-content;
     padding: 15px;
     background-color: var(--dpurple);
     border: solid var(--mpurple) 2px;
     border-radius: 5px;
-    transform: scale(0);
-    transform-origin: top left;
-}
-.node-menu textarea{
-    resize: none;
-}
-.node-menu.visible{
-    transform: scale(1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 200ms ease-in-out;
 }
-.node-menu button{
+
+.node-menu textarea {
+    resize: none;
+}
+
+.node-menu.visible {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.node-menu button {
+    display: block;
+    width: 100%;
     height: fit-content;
     background-color: rgb(77, 32, 107);
     border: solid black 2px;
