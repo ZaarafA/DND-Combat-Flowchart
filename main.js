@@ -11,7 +11,7 @@ const toggleHeaderButton = document.getElementById("toggle-header");
 const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
-flowchart = document.getElementById("flowchart");
+flowchart = document.querySelector(".flowchart");
 
 // Global Variables
 let pdfData = {};
@@ -181,7 +181,7 @@ function loadCharacterData(){
 // TODO: Base nodes shouldn't be deletable
 function renderFlowchart(){
     flowchart.innerHTML = '';
-    flowchart.classList.add("mermaid");
+    flowchart.classList.add("mermaid", "flowchart");
     flowchart.classList.add("active-flowchart");
 
     chartDefinition = `
@@ -335,7 +335,7 @@ function renderFlowchart(){
 // HELPER: Creates a new flowchart and loads definitions
 function refreshFlowchart(){
     const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid");
+    newDiv.classList.add("mermaid", "flowchart");
     newDiv.classList.add("active-flowchart");
     container.appendChild(newDiv);
     
