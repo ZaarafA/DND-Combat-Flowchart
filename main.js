@@ -254,11 +254,6 @@ function renderFlowchart(){
     setupNodes();
 }
 
-// Handle On-click for Nodes
-function onNodeClick(nodeId){
-    addNode(nodeId);
-}
-
 // HELPER: Creates a new flowchart and loads definitions
 function refreshFlowchart(){
     const newDiv = document.createElement("div");
@@ -319,8 +314,6 @@ function editNode(nodeId){
     setupNodes();
 }
 
-
-
 /// RELOAD NEW SHEET
 function reloadFlowchart(){
     // deletes existing flowchart, recreates it and then reruns the initial render
@@ -339,7 +332,9 @@ function reloadFlowchart(){
     renderFlowchart();
 }
 
+// Loads click event listener on nodes
 function setupNodes(){
+    // timeout to make sure DOM elements are loaded
     setTimeout(() => {
         const clickableNodes = document.querySelectorAll('.clickableNode');
         clickableNodes.forEach(node => {
