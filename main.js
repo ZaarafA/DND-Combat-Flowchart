@@ -18,6 +18,7 @@ let pdfData = {};
 let spells = {}
 let weapAtks = {};
 let pc_info = {};
+let currAction = '';
 let chartDefinition = '';
 let init_load = false;
 
@@ -294,9 +295,9 @@ function renderFlowchart(){
         let lastBA = '';
 
         if(pc_info.featContains["1A"]){
-            chartDefinition += `\nActions --> AFeatures[Features]`;
+            chartDefinition += `\nActions --> AFeatures[Features]:::clickableNode`;
         }if(pc_info.featContains["1BA"]){
-            chartDefinition += `\nBAs --> BAFeatures[Features]`;
+            chartDefinition += `\nBAs --> BAFeatures[Features]:::clickableNode`;
         }
 
         pc_info.ClassFeatures.forEach(feat => {
@@ -345,7 +346,8 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
-    let node_desc = prompt("New Node: ") || 'null';
+    let node_desc = document.getElementById('menu-input').value || 'null';
+    document.querySelector("#menu-input").value = "";
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
@@ -374,7 +376,8 @@ function deleteNode(nodeId) {
 }
 
 function editNode(nodeId){
-    let new_desc = prompt("Edit Node: ") || "null";
+    let new_desc = document.querySelector("#menu-input").value || "null";
+    document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
     chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
@@ -430,8 +433,8 @@ function setupNodes(){
 
                 // Attach event listeners to context menu items
                 document.querySelector('.context-menu .menu-item:nth-child(1)').onclick = () => {
-                    // nodeMenu.classList.add("visible");
-                    addNode(nodeId);
+                    nodeMenu.classList.add("visible");
+                    currAction = `ADD ${nodeId}`;
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(2)').onclick = () => {
@@ -439,7 +442,8 @@ function setupNodes(){
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
-                    editNode(nodeId);
+                    nodeMenu.classList.add("visible");
+                    currAction = `EDIT ${nodeId}`;
                     contextMenu.classList.remove("visible");
                 };
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
@@ -514,3 +518,12 @@ const normalizePozition = (mouseX, mouseY) => {
 
     return { normalizedX, normalizedY };
 };
+
+document.querySelector("#menu-submit").addEventListener("click", e => {
+    if(currAction.split(" ")[0] === "ADD"){
+        addNode(currAction.split(" ")[1]);
+    } else if(currAction.split(" ")[0] === "EDIT"){
+        editNode(currAction.split(" ")[1]);
+    }
+    nodeMenu.classList.remove("visible")
+})
