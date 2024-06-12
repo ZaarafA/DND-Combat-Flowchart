@@ -464,7 +464,7 @@ function setupNodes(){
 
 // Pop-up Display Logic
 // TODO: Refactor and separate into new file
-popup.style.display = "flex";
+popup.style.display = "none";
 document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
         popup.style.display = "none";
