@@ -442,8 +442,17 @@ function setupNodes(){
                     contextMenu.classList.remove("visible");
                 };
                 document.querySelector('.context-menu .menu-item:nth-child(3)').onclick = () => {
-                    nodeMenu.classList.add("visible");
+                    // fill with existing node data
+                    let prev_regex = new RegExp(`\\b${nodeId}(\\[\\(([^\\)]*)\\)\\]|\\[([^\\]]*)\\]|\\(([^\\)]*)\\))`, 'g');
+                    let match = prev_regex.exec(chartDefinition);
+                    let description = '';
+                    if (match) {
+                        description = match[2] || match[3] || match[4] || '';
+                    }
+                    document.getElementById('menu-input').value = description;
+                    
                     currAction = `EDIT ${nodeId}`;
+                    nodeMenu.classList.add("visible");
                     contextMenu.classList.remove("visible");
                 };
                 console.log(`(${mouseX},${mouseY}) - ${nodeId}`);
