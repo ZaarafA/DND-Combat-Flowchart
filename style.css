@@ -282,3 +282,13 @@ h2.minimized, .header-left.minimized{
     cursor: pointer;
     margin-top: 6px;
 }
+.node-menu .close-node-menu {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+    background-color: transparent;
+    border: none;
+}

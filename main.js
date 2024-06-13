@@ -348,6 +348,7 @@ function refreshFlowchart(){
 function addNode(nodeId){
     let definitionRestore = chartDefinition;
     let node_desc = document.getElementById('menu-input').value || 'null';
+    node_desc =  node_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
@@ -390,7 +391,7 @@ function deleteNode(nodeId) {
 function editNode(nodeId){
     let definitionRestore = chartDefinition;
     let new_desc = document.querySelector("#menu-input").value || "null";
-    new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '');
+    new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
@@ -550,3 +551,8 @@ document.querySelector("#menu-submit").addEventListener("click", e => {
     }
     nodeMenu.classList.remove("visible")
 })
+document.querySelector('.close-node-menu').addEventListener('click', () => {
+    nodeMenu.classList.remove("visible");
+    currAction = '';
+    document.getElementById('menu-input').value = '';
+});
