@@ -36,8 +36,8 @@
                 <h4>To Use:</h4>
                 <ul>
                     <li>Upload a Character Sheet PDF from D&D Beyond</li>
-                    <li>Left-click to add a child node. Right-click to delete</li>
-                    <li>Refresh the page before selecting a new sheet. (I'll fix that soon. Hopefully.)</li>
+                    <li>Left-click on a node to edit the flowchart</li>
+                    <li>Line breaks are added with "<\br>" in the node description</li>
                 </ul>
             </div>
         </div>        
@@ -48,7 +48,7 @@
             %%{init: {'theme': 'dark'}}%%
             flowchart TD;
             A{{Get Started!}} --> B[Load a Character Sheet PDF]
-            B ---> |"from D&DBeyond <br> (more options coming)"|C[Click on a Node to <br>Edit the Flowchart]
+            B ---> |"from D&DBeyond"|C[Click on a Node to <br>Edit the Flowchart]
             C --> E([Add: creates a child Node])
             C --> F([Delete: deletes node and all descendents])
             C --> G([Edit: Edit Node description])

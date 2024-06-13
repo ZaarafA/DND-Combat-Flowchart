@@ -487,12 +487,7 @@ document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
         popup.style.display = "none";
     }
-    else if(e.key === '/'){
-        e.preventDefault();
-        document.querySelector("#help-button").click();
-    }
     else if(e.key === 'd'){
-        e.preventDefault();
         console.log(chartDefinition);
     }
 });
