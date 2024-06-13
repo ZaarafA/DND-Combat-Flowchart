@@ -346,18 +346,25 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node
 // Create a new flowchart, delete the previous chart
 function addNode(nodeId){
+    let definitionRestore = chartDefinition;
     let node_desc = document.getElementById('menu-input').value || 'null';
     document.querySelector("#menu-input").value = "";
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
 
     chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}["${node_desc}"]:::clickableNode`;
+    if(!mermaid.parse(chartDefinition)){
+        chartDefinition = definitionRestore;
+        console.log("CHART DEFINITION ERROR");
+    }
 
     refreshFlowchart();
     setupNodes();
 }
 
 function deleteNode(nodeId) {
+    let definitionRestore = chartDefinition;
+
     const nodeRegex = new RegExp(`\\n${nodeId}\\[[^\\]]+\\]`, 'g');
     chartDefinition = chartDefinition.replace(nodeRegex, '');
 
@@ -371,11 +378,17 @@ function deleteNode(nodeId) {
         prev_chart.remove();
     }
 
+    if(!mermaid.parse(chartDefinition)){
+        chartDefinition = definitionRestore;
+        console.log("CHART DEFINITION ERROR");
+    }
+
     refreshFlowchart();
     setupNodes();
 }
 
 function editNode(nodeId){
+    let definitionRestore = chartDefinition;
     let new_desc = document.querySelector("#menu-input").value || "null";
     new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '');
     document.querySelector("#menu-input").value = "";
@@ -388,6 +401,11 @@ function editNode(nodeId){
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
         prev_chart.remove();
+    }
+
+    if(!mermaid.parse(chartDefinition)){
+        chartDefinition = definitionRestore;
+        console.log("CHART DEFINITION ERROR");
     }
 
     refreshFlowchart();
