@@ -32,6 +32,12 @@ body {
 .header-left button{
     margin-left: 8px;
 }
+.header-left img{
+    position: relative;
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
 
 .header.minimized {
     border: solid rgba(0, 0, 0, 0) 1px;
@@ -147,7 +153,7 @@ h2.minimized, .header-left.minimized{
     cursor: pointer;
 }
 
-@media (max-width:850px){
+@media (max-width:900px){
     h2{
         visibility: hidden;
         width: 0;
@@ -173,6 +179,9 @@ h2.minimized, .header-left.minimized{
     .header {
         justify-content: center;
         margin: 0;
+    }
+    .header img{
+        display: none;
     }
     #input-button{
         width: 75px;
@@ -225,7 +234,7 @@ h2.minimized, .header-left.minimized{
     width: 80px; 
     height: 80px; 
     position: absolute;
-    left: 10px; 
+    left: 60px; 
     top: 90px; 
     animation: bounce 2s infinite;
 }
