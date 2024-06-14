@@ -1,5 +1,5 @@
 # D&D Combat Flowchart
-#### This page is under construction.
+[Webpage](https://zaarafa.github.io/DND-Combat-Flowchart/)
 
-Creates a Combat Flowchart based on a Character Sheet PDF.
-Add and remove nodes as needed. 
+D&D Combat is confusing. Drawing out a flowchart lets you see what you can do at a glance, ensuring speedy turns and unforgotten Bonus Actions.
+This program takes a D&DBeyond Character Sheet PDF and generates a combat flowchart. Users can edit and save the flowchart as a quick reference guide. 
