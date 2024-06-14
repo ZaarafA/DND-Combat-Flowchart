@@ -14,3 +14,5 @@ This program takes a D&DBeyond Character Sheet PDF and generates a combat flowch
 - Left-click on a node to edit the flowchart
   - Add, Edit, or Delete a node. 
 - Click on "SAVE PNG" to save the flowchart as an image.
+
+#### Note: This is still a Work in Progress. Bugs are surely lurking out of sight.
