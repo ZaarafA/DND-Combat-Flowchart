@@ -8,7 +8,6 @@ const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
-const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
 let flowchart = document.querySelector(".flowchart");
@@ -177,8 +176,6 @@ function loadCharacterData(){
     console.log(pc_info);
 }
 
-// TODO: The rendering logic is redundant
-// TODO: Base nodes shouldn't be deletable
 function renderFlowchart(){
     flowchart.innerHTML = '';
     flowchart.classList.add("mermaid", "flowchart");
@@ -193,7 +190,6 @@ function renderFlowchart(){
     `;
 
     // Render Character Details
-    // TODO: Note: Don't need to sanatize info, just encapsulate it in quotes
     chartDefinition += `\n Name{{"${pdfData["CharacterName"]}" <br> AC: ${pc_info.AC}, Init. Bonus: ${pc_info.Init}}} ==o Start`
 
     // RENDER MOVEMENT
@@ -217,7 +213,6 @@ function renderFlowchart(){
                     spellsNode += `: ${cleanSave}`;
                 }
                 spellsNode += " <br> ";
-
                 spellCount++;
 
                 if (spellCount == 15) {
@@ -347,10 +342,11 @@ function refreshFlowchart(){
     
     newDiv.innerHTML = chartDefinition;
     mermaid.run(undefined, newDiv);
+
+    setupNodes();
 }
 
-// When a node is added, update the Chart Definition with the new node
-// Create a new flowchart, delete the previous chart
+// When a node is added, update the Chart Definition with the new node, then reload chart
 function addNode(nodeId){
     let definitionRestore = chartDefinition;
     let node_desc = document.getElementById('menu-input').value || 'null';
@@ -365,7 +361,6 @@ function addNode(nodeId){
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 function deleteNode(nodeId) {
@@ -385,7 +380,6 @@ function deleteNode(nodeId) {
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 function editNode(nodeId){
@@ -405,7 +399,6 @@ function editNode(nodeId){
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 /// RELOAD NEW SHEET
