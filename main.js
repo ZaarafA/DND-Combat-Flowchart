@@ -348,7 +348,7 @@ function refreshFlowchart(){
 function addNode(nodeId){
     let definitionRestore = chartDefinition;
     let node_desc = document.getElementById('menu-input').value || 'null';
-    node_desc =  node_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
+    node_desc =  node_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
     let prev_chart = document.querySelector(".active-flowchart");
     prev_chart.remove();
@@ -391,12 +391,12 @@ function deleteNode(nodeId) {
 function editNode(nodeId){
     let definitionRestore = chartDefinition;
     let new_desc = document.querySelector("#menu-input").value || "null";
-    new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
+    new_desc =  new_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
     chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
-        return `${nodeId}${p1.charAt(0)}${new_desc}${p1.charAt(p1.length - 1)}`;
+        return `${nodeId}${p1.charAt(0)}"${new_desc}"${p1.charAt(p1.length - 1)}`;
     });
 
     let prev_chart = document.querySelector(".active-flowchart");
