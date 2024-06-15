@@ -374,6 +374,7 @@ function deleteNode(nodeId) {
     const reverseConnectionRegex = new RegExp(`\\n${nodeId}.*--.*`, 'g');
     chartDefinition = chartDefinition.replace(reverseConnectionRegex, '');
 
+    // Remove existing chart and rerender new one after validation
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
         prev_chart.remove();
@@ -399,6 +400,7 @@ function editNode(nodeId){
         return `${nodeId}${p1.charAt(0)}"${new_desc}"${p1.charAt(p1.length - 1)}`;
     });
 
+    // Remove existing chart and rerender new one after validation
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
         prev_chart.remove();
@@ -439,12 +441,14 @@ function setupNodes(){
         clickableNodes.forEach(node => {
             node.addEventListener('click', e => {
                 e.preventDefault();
+
+                // Open Context Menu at normalized position
                 const { clientX: mouseX, clientY: mouseY } = e;
                 const { normalizedX, normalizedY } = normalizePozition(mouseX, mouseY);
                 contextMenu.classList.remove("visible");
                 contextMenu.style.top = `${normalizedY}px`;
                 contextMenu.style.left = `${normalizedX}px`;
-        
+
                 setTimeout(() => {
                   contextMenu.classList.add("visible");
                 });
@@ -481,8 +485,52 @@ function setupNodes(){
     }, 200);
 }
 
+// Normalize mouse position to stop context menu from going offscreen
+const normalizePozition = (mouseX, mouseY) => {
+    // compute mouse position relative to the container element
+    let {
+      left: scopeOffsetX,
+      top: scopeOffsetY,
+      right: scopeRight,
+      bottom: scopeBottom,
+    } = container.getBoundingClientRect();
+    
+    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
+    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
+   
+    const scopeX = mouseX - scopeOffsetX;
+    const scopeY = mouseY - scopeOffsetY;
+
+    let normalizedX = mouseX;
+    let normalizedY = mouseY;
+
+    if (scopeX + contextMenu.clientWidth > scopeRight) {
+      normalizedX = scopeRight - contextMenu.clientWidth;
+    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
+      normalizedY = scopeBottom - contextMenu.clientHeight;
+    }
+
+    return { normalizedX, normalizedY };
+};
+
+
+// DOM Manipulation
+// Event Listeners for Node Menu 
+document.querySelector("#menu-submit").addEventListener("click", e => {
+    if(currAction.split(" ")[0] === "ADD"){
+        addNode(currAction.split(" ")[1]);
+    } else if(currAction.split(" ")[0] === "EDIT"){
+        editNode(currAction.split(" ")[1]);
+    }
+    nodeMenu.classList.remove("visible")
+})
+document.querySelector('.close-node-menu').addEventListener('click', () => {
+    nodeMenu.classList.remove("visible");
+    currAction = '';
+    document.getElementById('menu-input').value = '';
+});
+
 // Pop-up Display Logic
-// TODO: Refactor and separate into new file
 popup.style.display = "none";
 document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
@@ -513,46 +561,4 @@ toggleHeaderButton.addEventListener('click', () => {
     } else {
         toggleHeaderButton.textContent = '<<'
     }
-});
-
-// Normalize mouse position to stop context menu from going offscreen
-const normalizePozition = (mouseX, mouseY) => {
-    // compute mouse position relative to the container element
-    let {
-      left: scopeOffsetX,
-      top: scopeOffsetY,
-      right: scopeRight,
-      bottom: scopeBottom,
-    } = container.getBoundingClientRect();
-    
-    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
-    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
-   
-    const scopeX = mouseX - scopeOffsetX;
-    const scopeY = mouseY - scopeOffsetY;
-
-    let normalizedX = mouseX;
-    let normalizedY = mouseY;
-
-    if (scopeX + contextMenu.clientWidth > scopeRight) {
-      normalizedX = scopeRight - contextMenu.clientWidth;
-    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
-      normalizedY = scopeBottom - contextMenu.clientHeight;
-    }
-
-    return { normalizedX, normalizedY };
-};
-
-document.querySelector("#menu-submit").addEventListener("click", e => {
-    if(currAction.split(" ")[0] === "ADD"){
-        addNode(currAction.split(" ")[1]);
-    } else if(currAction.split(" ")[0] === "EDIT"){
-        editNode(currAction.split(" ")[1]);
-    }
-    nodeMenu.classList.remove("visible")
-})
-document.querySelector('.close-node-menu').addEventListener('click', () => {
-    nodeMenu.classList.remove("visible");
-    currAction = '';
-    document.getElementById('menu-input').value = '';
 });
