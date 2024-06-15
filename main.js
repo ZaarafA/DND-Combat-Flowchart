@@ -334,6 +334,12 @@ function renderFlowchart(){
 
 // HELPER: Creates a new flowchart and loads definitions
 function refreshFlowchart(){
+    // Remove existing chart and rerender new one after validation
+    let prev_chart = document.querySelector(".active-flowchart");
+    if (prev_chart) {
+        prev_chart.remove();
+    }
+    
     const newDiv = document.createElement("div");
     newDiv.classList.add("mermaid", "flowchart");
     newDiv.classList.add("active-flowchart");
@@ -350,10 +356,9 @@ function addNode(nodeId){
     let node_desc = document.getElementById('menu-input').value || 'null';
     node_desc =  node_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
-    let prev_chart = document.querySelector(".active-flowchart");
-    prev_chart.remove();
-
+    
     chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}["${node_desc}"]:::clickableNode`;
+    
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
         console.log("CHART DEFINITION ERROR");
@@ -374,12 +379,6 @@ function deleteNode(nodeId) {
     const reverseConnectionRegex = new RegExp(`\\n${nodeId}.*--.*`, 'g');
     chartDefinition = chartDefinition.replace(reverseConnectionRegex, '');
 
-    // Remove existing chart and rerender new one after validation
-    let prev_chart = document.querySelector(".active-flowchart");
-    if (prev_chart) {
-        prev_chart.remove();
-    }
-
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
         console.log("CHART DEFINITION ERROR");
@@ -399,12 +398,6 @@ function editNode(nodeId){
     chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
         return `${nodeId}${p1.charAt(0)}"${new_desc}"${p1.charAt(p1.length - 1)}`;
     });
-
-    // Remove existing chart and rerender new one after validation
-    let prev_chart = document.querySelector(".active-flowchart");
-    if (prev_chart) {
-        prev_chart.remove();
-    }
 
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
