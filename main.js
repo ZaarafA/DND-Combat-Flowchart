@@ -178,8 +178,7 @@ function loadCharacterData(){
 
 function renderFlowchart(){
     flowchart.innerHTML = '';
-    flowchart.classList.add("mermaid", "flowchart");
-    flowchart.classList.add("active-flowchart");
+    flowchart.classList.add("mermaid", "flowchart", "active-flowchart");
 
     chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
@@ -329,15 +328,14 @@ function renderFlowchart(){
 
 // HELPER: Creates a new flowchart and loads definitions
 function refreshFlowchart(){
-    // Remove existing chart and rerender new one after validation
+    // Remove existing chart and rerender new one
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
         prev_chart.remove();
     }
     
     const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid", "flowchart");
-    newDiv.classList.add("active-flowchart");
+    newDiv.classList.add("mermaid", "flowchart", "active-flowchart");
     container.appendChild(newDiv);
     
     newDiv.innerHTML = chartDefinition;
