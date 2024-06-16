@@ -10,6 +10,7 @@ const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
+const menu_input = document.querySelector("#menu-input");
 let flowchart = document.querySelector(".flowchart");
 
 // Global Variables
@@ -544,5 +545,18 @@ toggleHeaderButton.addEventListener('click', () => {
         toggleHeaderButton.textContent = '>>'
     } else {
         toggleHeaderButton.textContent = '<<'
+    }
+});
+
+// Automatically fill in closing tags
+menu_input.addEventListener('input', function(event) {
+    let textarea = event.target;
+    let value = textarea.value;
+    
+    if (value.endsWith('<u>') || value.endsWith('<b>') || value.endsWith('<i>')) {
+        let cursorPosition = textarea.selectionStart;
+        textarea.value = value + `</${value.charAt(value.length - 2)}>`;
+        
+        textarea.setSelectionRange(cursorPosition, cursorPosition);
     }
 });
