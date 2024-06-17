@@ -8,9 +8,10 @@ const popup = document.getElementById("popup");
 const popupClose = document.getElementById("popup-close");
 const header = document.querySelector(".header");
 const toggleHeaderButton = document.getElementById("toggle-header");
-const body = document.querySelector("body");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
+const menu_input = document.querySelector("#menu-input");
+const undo_button = document.querySelector("#undo-button");
 let flowchart = document.querySelector(".flowchart");
 
 // Global Variables
@@ -21,12 +22,10 @@ let pc_info = {};
 let currAction = '';
 let chartDefinition = '';
 let init_load = false;
+let undo_stack = [];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
-
-// TODO: Refactoring
-// TODO: Use mermaid.parse to validate change. If failed, reset
 
 // PDF Upload
 input_button.addEventListener("change", e => {
@@ -177,12 +176,9 @@ function loadCharacterData(){
     console.log(pc_info);
 }
 
-// TODO: The rendering logic is redundant
-// TODO: Base nodes shouldn't be deletable
 function renderFlowchart(){
     flowchart.innerHTML = '';
-    flowchart.classList.add("mermaid", "flowchart");
-    flowchart.classList.add("active-flowchart");
+    flowchart.classList.add("mermaid", "flowchart", "active-flowchart");
 
     chartDefinition = `
     %%{init: {'theme': 'dark'}}%%    
@@ -193,7 +189,6 @@ function renderFlowchart(){
     `;
 
     // Render Character Details
-    // TODO: Note: Don't need to sanatize info, just encapsulate it in quotes
     chartDefinition += `\n Name{{"${pdfData["CharacterName"]}" <br> AC: ${pc_info.AC}, Init. Bonus: ${pc_info.Init}}} ==o Start`
 
     // RENDER MOVEMENT
@@ -217,7 +212,6 @@ function renderFlowchart(){
                     spellsNode += `: ${cleanSave}`;
                 }
                 spellsNode += " <br> ";
-
                 spellCount++;
 
                 if (spellCount == 15) {
@@ -254,7 +248,6 @@ function renderFlowchart(){
         let hasBASpells = false;
 
         Object.keys(spells).forEach((key, index) => {
-            // TODO: This is redundant, make a separate function
             if(spells[key].Time == '1BA'){
                 // eliminate special symbols
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -333,38 +326,45 @@ function renderFlowchart(){
 }
 
 // HELPER: Creates a new flowchart and loads definitions
-function refreshFlowchart(){
+function refreshFlowchart(){    
+    // Remove existing chart and rerender new one
+    let prev_chart = document.querySelector(".active-flowchart");
+    if (prev_chart) {
+        prev_chart.remove();
+    }
+    
     const newDiv = document.createElement("div");
-    newDiv.classList.add("mermaid", "flowchart");
-    newDiv.classList.add("active-flowchart");
+    newDiv.classList.add("mermaid", "flowchart", "active-flowchart");
     container.appendChild(newDiv);
     
     newDiv.innerHTML = chartDefinition;
     mermaid.run(undefined, newDiv);
+
+    setupNodes();
 }
 
-// When a node is added, update the Chart Definition with the new node
-// Create a new flowchart, delete the previous chart
+// When a node is added, update the Chart Definition with the new node, then reload chart
 function addNode(nodeId){
     let definitionRestore = chartDefinition;
-    let node_desc = document.getElementById('menu-input').value || 'null';
-    node_desc =  node_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
-    document.querySelector("#menu-input").value = "";
-    let prev_chart = document.querySelector(".active-flowchart");
-    prev_chart.remove();
+    undo_stack.push(chartDefinition);
 
+    let node_desc = document.getElementById('menu-input').value || 'null';
+    node_desc =  node_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
+    document.querySelector("#menu-input").value = "";
+    
     chartDefinition += `\n${nodeId} --> ${new Date().toISOString().replace(/[:.]/g, '')}["${node_desc}"]:::clickableNode`;
+    
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
         console.log("CHART DEFINITION ERROR");
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 function deleteNode(nodeId) {
     let definitionRestore = chartDefinition;
+    undo_stack.push(chartDefinition);
 
     const nodeRegex = new RegExp(`\\n${nodeId}\\[[^\\]]+\\]`, 'g');
     chartDefinition = chartDefinition.replace(nodeRegex, '');
@@ -374,35 +374,26 @@ function deleteNode(nodeId) {
     const reverseConnectionRegex = new RegExp(`\\n${nodeId}.*--.*`, 'g');
     chartDefinition = chartDefinition.replace(reverseConnectionRegex, '');
 
-    let prev_chart = document.querySelector(".active-flowchart");
-    if (prev_chart) {
-        prev_chart.remove();
-    }
-
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
         console.log("CHART DEFINITION ERROR");
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 function editNode(nodeId){
     let definitionRestore = chartDefinition;
+    undo_stack.push(chartDefinition);
+
     let new_desc = document.querySelector("#menu-input").value || "null";
-    new_desc =  new_desc.replace(/[^a-zA-Z0-9+><: ]/g, '') || "null";
+    new_desc =  new_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
     let nodeRegex = new RegExp(`${nodeId}(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\[\\([^\\)]*\\)\\])`, 'g');
 
     chartDefinition = chartDefinition.replace(nodeRegex, (match, p1) => {
-        return `${nodeId}${p1.charAt(0)}${new_desc}${p1.charAt(p1.length - 1)}`;
+        return `${nodeId}${p1.charAt(0)}"${new_desc}"${p1.charAt(p1.length - 1)}`;
     });
-
-    let prev_chart = document.querySelector(".active-flowchart");
-    if (prev_chart) {
-        prev_chart.remove();
-    }
 
     if(!mermaid.parse(chartDefinition)){
         chartDefinition = definitionRestore;
@@ -410,7 +401,6 @@ function editNode(nodeId){
     }
 
     refreshFlowchart();
-    setupNodes();
 }
 
 /// RELOAD NEW SHEET
@@ -431,6 +421,19 @@ function reloadFlowchart(){
     renderFlowchart();
 }
 
+// Every change adds the chart definition to an undo stack. 
+// When undo is clicked, the chart def is replaced with top of stack
+// Chart is reloaded with previous definition
+function undo(){
+    console.log(`Undo called. Stack size: ${undo_stack.length}`);
+    if(undo_stack.length > 0){
+        chartDefinition = undo_stack.pop();
+        refreshFlowchart();
+    } else {
+        console.log("Undo Stack Empty");
+    }
+}
+
 // Loads click event listener on nodes
 function setupNodes(){
     // timeout to make sure DOM elements are loaded
@@ -439,12 +442,14 @@ function setupNodes(){
         clickableNodes.forEach(node => {
             node.addEventListener('click', e => {
                 e.preventDefault();
+
+                // Open Context Menu at normalized position
                 const { clientX: mouseX, clientY: mouseY } = e;
                 const { normalizedX, normalizedY } = normalizePozition(mouseX, mouseY);
                 contextMenu.classList.remove("visible");
                 contextMenu.style.top = `${normalizedY}px`;
                 contextMenu.style.left = `${normalizedX}px`;
-        
+
                 setTimeout(() => {
                   contextMenu.classList.add("visible");
                 });
@@ -481,8 +486,52 @@ function setupNodes(){
     }, 200);
 }
 
+// Normalize mouse position to stop context menu from going offscreen
+const normalizePozition = (mouseX, mouseY) => {
+    // compute mouse position relative to the container element
+    let {
+      left: scopeOffsetX,
+      top: scopeOffsetY,
+      right: scopeRight,
+      bottom: scopeBottom,
+    } = container.getBoundingClientRect();
+    
+    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
+    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
+   
+    const scopeX = mouseX - scopeOffsetX;
+    const scopeY = mouseY - scopeOffsetY;
+
+    let normalizedX = mouseX;
+    let normalizedY = mouseY;
+
+    if (scopeX + contextMenu.clientWidth > scopeRight) {
+      normalizedX = scopeRight - contextMenu.clientWidth;
+    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
+      normalizedY = scopeBottom - contextMenu.clientHeight;
+    }
+
+    return { normalizedX, normalizedY };
+};
+
+
+// DOM Manipulation
+// Event Listeners for Node Menu 
+document.querySelector("#menu-submit").addEventListener("click", e => {
+    if(currAction.split(" ")[0] === "ADD"){
+        addNode(currAction.split(" ")[1]);
+    } else if(currAction.split(" ")[0] === "EDIT"){
+        editNode(currAction.split(" ")[1]);
+    }
+    nodeMenu.classList.remove("visible")
+})
+document.querySelector('.close-node-menu').addEventListener('click', () => {
+    nodeMenu.classList.remove("visible");
+    currAction = '';
+    document.getElementById('menu-input').value = '';
+});
+
 // Pop-up Display Logic
-// TODO: Refactor and separate into new file
 popup.style.display = "none";
 document.addEventListener("keydown", e => {
     if(e.key === 'Escape'){
@@ -515,44 +564,19 @@ toggleHeaderButton.addEventListener('click', () => {
     }
 });
 
-// Normalize mouse position to stop context menu from going offscreen
-const normalizePozition = (mouseX, mouseY) => {
-    // compute mouse position relative to the container element
-    let {
-      left: scopeOffsetX,
-      top: scopeOffsetY,
-      right: scopeRight,
-      bottom: scopeBottom,
-    } = container.getBoundingClientRect();
+// Automatically fill in closing tags
+menu_input.addEventListener('input', function(event) {
+    let textarea = event.target;
+    let value = textarea.value;
     
-    scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
-    scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
-   
-    const scopeX = mouseX - scopeOffsetX;
-    const scopeY = mouseY - scopeOffsetY;
-
-    let normalizedX = mouseX;
-    let normalizedY = mouseY;
-
-    if (scopeX + contextMenu.clientWidth > scopeRight) {
-      normalizedX = scopeRight - contextMenu.clientWidth;
-    } if (scopeY + contextMenu.clientHeight > scopeBottom) {
-      normalizedY = scopeBottom - contextMenu.clientHeight;
+    if (value.endsWith('<u>') || value.endsWith('<b>') || value.endsWith('<i>')) {
+        let cursorPosition = textarea.selectionStart;
+        textarea.value = value + `</${value.charAt(value.length - 2)}>`;
+        
+        textarea.setSelectionRange(cursorPosition, cursorPosition);
     }
-
-    return { normalizedX, normalizedY };
-};
-
-document.querySelector("#menu-submit").addEventListener("click", e => {
-    if(currAction.split(" ")[0] === "ADD"){
-        addNode(currAction.split(" ")[1]);
-    } else if(currAction.split(" ")[0] === "EDIT"){
-        editNode(currAction.split(" ")[1]);
-    }
-    nodeMenu.classList.remove("visible")
-})
-document.querySelector('.close-node-menu').addEventListener('click', () => {
-    nodeMenu.classList.remove("visible");
-    currAction = '';
-    document.getElementById('menu-input').value = '';
 });
+
+undo_button.addEventListener('click', e => {
+    undo();
+})

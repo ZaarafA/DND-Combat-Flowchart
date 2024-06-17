@@ -87,6 +87,15 @@ h2.minimized, .header-left.minimized{
     padding: 6px 24px;
     cursor: pointer;
 }
+#undo-button{
+    height: fit-content;
+    background-color: rgb(77, 32, 107);
+    border: solid black 2px;
+    border-radius: 6px;
+    color: white;
+    padding: 6px 20px;
+    cursor: pointer;
+}
 #help-button {
     background-color: rgb(77, 32, 107);
     border: solid black 2px;
@@ -153,7 +162,7 @@ h2.minimized, .header-left.minimized{
     cursor: pointer;
 }
 
-@media (max-width:900px){
+@media (max-width:1010px){
     h2{
         visibility: hidden;
         width: 0;
@@ -164,7 +173,7 @@ h2.minimized, .header-left.minimized{
     }
 }
 
-@media (max-width:600px){
+@media (max-width:700px){
     h2{
         visibility: hidden;
         width: 0;
@@ -181,7 +190,7 @@ h2.minimized, .header-left.minimized{
         margin: 0;
     }
     .header img{
-        display: none;
+        /* display: none; */
     }
     #input-button{
         width: 75px;
