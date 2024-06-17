@@ -407,11 +407,6 @@ function editNode(nodeId){
 function reloadFlowchart(){
     // deletes existing flowchart, recreates it and then reruns the initial render
     document.querySelector(".active-flowchart").remove();
-
-    // RESET values
-    let spells = {};
-    let weapAtks = {};
-    let chartDefinition = '';
     
     const newDiv = document.createElement("div");
     newDiv.classList.add("mermaid", "active-flowchart", "flowchart");
