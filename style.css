@@ -162,7 +162,7 @@ h2.minimized, .header-left.minimized{
     cursor: pointer;
 }
 
-@media (max-width:900px){
+@media (max-width:1010px){
     h2{
         visibility: hidden;
         width: 0;
@@ -173,7 +173,7 @@ h2.minimized, .header-left.minimized{
     }
 }
 
-@media (max-width:600px){
+@media (max-width:700px){
     h2{
         visibility: hidden;
         width: 0;
@@ -190,7 +190,7 @@ h2.minimized, .header-left.minimized{
         margin: 0;
     }
     .header img{
-        display: none;
+        /* display: none; */
     }
     #input-button{
         width: 75px;
