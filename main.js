@@ -11,6 +11,7 @@ const toggleHeaderButton = document.getElementById("toggle-header");
 const contextMenu = document.querySelector(".context-menu");
 const nodeMenu = document.querySelector(".node-menu");
 const menu_input = document.querySelector("#menu-input");
+const undo_button = document.querySelector("#undo-button");
 let flowchart = document.querySelector(".flowchart");
 
 // Global Variables
@@ -21,12 +22,10 @@ let pc_info = {};
 let currAction = '';
 let chartDefinition = '';
 let init_load = false;
+let undo_stack = [];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
-
-// TODO: Refactoring
-// TODO: Use mermaid.parse to validate change. If failed, reset
 
 // PDF Upload
 input_button.addEventListener("change", e => {
@@ -249,7 +248,6 @@ function renderFlowchart(){
         let hasBASpells = false;
 
         Object.keys(spells).forEach((key, index) => {
-            // TODO: This is redundant, make a separate function
             if(spells[key].Time == '1BA'){
                 // eliminate special symbols
                 let cleanName = spells[key].Name.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -328,7 +326,7 @@ function renderFlowchart(){
 }
 
 // HELPER: Creates a new flowchart and loads definitions
-function refreshFlowchart(){
+function refreshFlowchart(){    
     // Remove existing chart and rerender new one
     let prev_chart = document.querySelector(".active-flowchart");
     if (prev_chart) {
@@ -348,6 +346,8 @@ function refreshFlowchart(){
 // When a node is added, update the Chart Definition with the new node, then reload chart
 function addNode(nodeId){
     let definitionRestore = chartDefinition;
+    undo_stack.push(chartDefinition);
+
     let node_desc = document.getElementById('menu-input').value || 'null';
     node_desc =  node_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
@@ -364,6 +364,7 @@ function addNode(nodeId){
 
 function deleteNode(nodeId) {
     let definitionRestore = chartDefinition;
+    undo_stack.push(chartDefinition);
 
     const nodeRegex = new RegExp(`\\n${nodeId}\\[[^\\]]+\\]`, 'g');
     chartDefinition = chartDefinition.replace(nodeRegex, '');
@@ -383,6 +384,8 @@ function deleteNode(nodeId) {
 
 function editNode(nodeId){
     let definitionRestore = chartDefinition;
+    undo_stack.push(chartDefinition);
+
     let new_desc = document.querySelector("#menu-input").value || "null";
     new_desc =  new_desc.replace(/[^a-zA-Z0-9+></: ]/g, '') || "null";
     document.querySelector("#menu-input").value = "";
@@ -416,6 +419,19 @@ function reloadFlowchart(){
     flowchart = document.querySelector(".flowchart");
 
     renderFlowchart();
+}
+
+// Every change adds the chart definition to an undo stack. 
+// When undo is clicked, the chart def is replaced with top of stack
+// Chart is reloaded with previous definition
+function undo(){
+    console.log(`Undo called. Stack size: ${undo_stack.length}`);
+    if(undo_stack.length > 0){
+        chartDefinition = undo_stack.pop();
+        refreshFlowchart();
+    } else {
+        console.log("Undo Stack Empty");
+    }
 }
 
 // Loads click event listener on nodes
@@ -560,3 +576,7 @@ menu_input.addEventListener('input', function(event) {
         textarea.setSelectionRange(cursorPosition, cursorPosition);
     }
 });
+
+undo_button.addEventListener('click', e => {
+    undo();
+})
