@@ -81,14 +81,17 @@ async function extractFormFields(pdfDoc) {
     }
 
     console.log(pdfData);
+    // reset previous form data
     spells = {};
     weapAtks = {};
     pc_info = {};
 
+    // read pdf data into action groupings
     loadSpells();
     loadWeapAtk();
     loadCharacterData();
 
+    // test whether this is the first pdf loaded -> remove init setup
     if(!init_load){
         document.querySelector("#test-flowchart").remove();
         document.querySelector(".arrow").remove();
@@ -156,7 +159,7 @@ function loadCharacterData(){
             "1BA": false,
         }
     }
-    // Class data
+    // Class data --> check each class and compare it to the unlock level
     pc_info["ClassLevel"].forEach(classItem => {
         let [className, classLevel] = classItem.split(" ");
         classLevel = parseInt(classLevel, 10);
@@ -362,6 +365,8 @@ function addNode(nodeId){
     refreshFlowchart();
 }
 
+// deletes node and descendants from chartDefinition
+// TODO: potential error in the regex regarding node styles
 function deleteNode(nodeId) {
     let definitionRestore = chartDefinition;
     undo_stack.push(chartDefinition);
